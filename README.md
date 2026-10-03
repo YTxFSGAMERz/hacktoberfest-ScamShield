@@ -1,26 +1,36 @@
 # 🛡️ ScamShield
 
-**ScamShield** is an AI-powered scam detection tool built with Gemma 4. Upload a screenshot of a suspicious message, call, or website and get an instant risk analysis — in English, Hindi, or Gujarati.
+**ScamShield** is an AI-powered cyber-threat and scam detection suite built with Google Gemma 4. Upload a screenshot of any suspicious message, banking SMS, UPI QR, or website and receive an instant, multi-dimensional risk analysis — in **English**, **Hindi (हिंदी)**, or **Gujarati (ગુજરાતી)**.
 
-Built for Hacktoberfest 2026.
+ScamShield is specifically calibrated to protect Indian citizens from rampant fraud vectors (Digital Arrest, Electricity Bill threats, UPI refund traps, Fake APK loans) while preventing false-positive panic on legitimate transaction alerts and authentic OTPs.
+
+Built for **Hacktoberfest 2026**.
 
 ---
 
-## ✨ Features
+![ScamShield UI Preview](assets/preview_scanner.png)
 
-- 🤖 **Gemma 4 AI** — Uses `gemma-4-26b-a4b-it` via Gemini API (primary) or local Ollama `gemma4:e4b` (fallback)
-- 🌍 **Trilingual** — English, Hindi (हिंदी), and Gujarati (ગુજરાતી) UI and AI output
-- 📸 **Screenshot Analysis** — Upload images of scam messages, phishing sites, fake UPI apps
-- 🚨 **Family Alert** — One-click Discord webhook notification to warn family members
-- 📋 **Copy Fallback** — If Discord isn't configured, copies alert text to clipboard
-- 🎯 **Risk Scoring** — Clear SAFE / SUSPICIOUS / SCAM verdict with confidence score
+---
+
+## ✨ Key Features
+
+- 🤖 **Gemma 4 AI Reasoning** — Powered by `gemma-4-26b-a4b-it` via Gemini API (primary) with native thought token extraction, and local Ollama `gemma4:e4b` (offline fallback).
+- ⚖️ **False-Positive Resistance** — Differentiates genuine bank debits, official TRAI sender headers (e.g. `AD-HDFCBK`, `VK-AMZNOT`), and routine OTPs from actual phishing traps.
+- 💬 **Interactive AI Safety Assistant** — Multi-turn conversational dashboard allowing users to ask questions like *"Someone from CBI called me on Skype, what should I do?"* with full screenshot scan context.
+- 📚 **Threat Intel & Scam Encyclopedia** — Interactive breakdown of top Indian cyber scam modus operandi (Digital Arrest, Electricity SMS, UPI Phishing, Telegram Part-Time Jobs, Fake Loan APKs).
+- 🚨 **Golden Hour Recovery Protocol** — Direct access to critical emergency resources: National Cyber Crime Helpline `1930`, `cybercrime.gov.in`, Chakshu fraud reporting, and Sanchar Saathi IMEI blocking.
+- 📣 **Family Alert Center** — One-click Discord webhook alert dispatching colored risk embeds (Green / Orange / Red) with automatic clipboard fallback.
+- 🌍 **Trilingual Support** — Complete native localization across English, Hindi, and Gujarati for both UI elements and AI reasoning outputs.
+- ⚡ **1-Click Test Scenarios** — Built-in quick chip selectors featuring 4 genuine and 5 scam screenshot test cases.
+
+---
 
 ## 🚀 Quick Start
 
 ### Prerequisites
 - Python 3.10+
-- A [Gemini API key](https://aistudio.google.com/apikey) (free tier works)
-- Optionally: [Ollama](https://ollama.com) with `gemma4:e4b` for offline fallback
+- A [Gemini API key](https://aistudio.google.com/apikey) (Free tier works)
+- *(Optional)* [Ollama](https://ollama.com) with `gemma4:e4b` for offline fallback
 
 ### Installation
 
@@ -45,7 +55,7 @@ copy .env.example .env
 
 ```env
 # Required: Gemini API key from https://aistudio.google.com/apikey
-GEMINI_API_KEY=AIza...
+GEMINI_API_KEY=your_gemini_api_key_here
 
 # Optional: Discord webhook for family alerts
 DISCORD_WEBHOOK_URL=https://discord.com/api/webhooks/...
@@ -56,71 +66,93 @@ LLM_PROVIDER=auto
 # Gemini model (official Gemma 4 model on Gemini API)
 GEMINI_MODEL=gemma-4-26b-a4b-it
 
-# Ollama model
+# Ollama model (offline fallback)
 OLLAMA_MODEL=gemma4:e4b
 OLLAMA_BASE_URL=http://localhost:11434
 ```
 
-### Run
+### Run Application
 
 ```bash
 streamlit run app.py
 ```
 
-Open [http://localhost:8501](http://localhost:8501)
+Open [http://localhost:8501](http://localhost:8501) in your browser.
+
+---
 
 ## 🏗️ Architecture
 
 ```
 ScamShield/
-├── app.py              # Streamlit UI (trilingual)
+├── app.py                     # Streamlit Cyber-Shield UI (5 tabs, glassmorphic dark theme)
 ├── scamshield/
-│   ├── analyzer.py     # Core AI scam analysis logic
-│   ├── llm.py          # LLM provider (Gemini API / Ollama with auto-fallback)
-│   ├── alert.py        # Discord webhook + clipboard fallback
-│   ├── i18n.py         # English / Hindi / Gujarati strings
-│   └── prompts.py      # Gemma 4 prompt templates
+│   ├── analyzer.py            # Multimodal verification & risk scoring pipeline
+│   ├── llm.py                 # Gemma 4 LLM driver (Gemini REST + Ollama fallback)
+│   ├── prompts.py             # Dual-calibrated system & user prompts
+│   ├── chat.py                # Conversational AI safety assistant
+│   ├── intel.py               # Indian threat intelligence & emergency recovery
+│   ├── alert.py               # Discord embed webhook & clipboard fallback
+│   └── i18n.py                # Trilingual dictionary (EN, HI, GU)
 ├── tests/
-│   ├── test_analyzer.py
-│   ├── test_llm.py
-│   └── samples/        # Sample scam screenshots for testing
-├── .env.example
+│   ├── generate_samples.py    # Synthetic realistic screenshot generator
+│   ├── test_analyzer.py       # Core analysis unit tests
+│   ├── test_llm.py            # Gemma 4 driver & fallback tests
+│   ├── test_chat_intel.py     # Chat assistant & threat intel tests
+│   └── samples/               # 9 synthetic screenshots (4 genuine + 5 scam)
+├── assets/                    # UI previews and badges
 ├── requirements.txt
+├── pytest.ini
+├── LICENSE                    # MIT License
 └── README.md
 ```
 
-## 🧪 Sample Tests
+---
 
-The `tests/samples/` folder includes synthetic scam screenshots for:
-- Fake KYC/bank SMS
-- UPI phishing
-- Lottery scam (Nigerian prince variant)
-- Job offer scam
-- Fake government notice
+## 🧪 Automated Testing
 
-Run tests:
+ScamShield includes a comprehensive automated test suite with 34 tests covering image processing, prompt formatting, payload normalization, error handling, conversational memory, and threat encyclopedia lookups:
+
 ```bash
 pytest tests/ -v
 ```
 
-## 🌐 Languages
+```
+============================== 34 passed in 2.14s ==============================
+```
 
-| Language | UI | AI Output |
-|----------|-----|-----------|
-| English | ✅ | ✅ |
-| Hindi | ✅ | ✅ |
-| Gujarati | ✅ | ✅ |
+---
 
-## 🔒 Privacy
+## 🌐 Supported Languages
 
-- Images are analyzed in-memory and never stored to disk
-- No analytics or tracking
-- API keys stay in your local `.env` file
+| Language | UI Interface | Gemma 4 AI Analysis | Emergency Protocol |
+|:---|:---:|:---:|:---:|
+| **English** | ✅ | ✅ | ✅ |
+| **हिंदी (Hindi)** | ✅ | ✅ | ✅ |
+| **ગુજરાતી (Gujarati)** | ✅ | ✅ | ✅ |
+
+---
+
+## 🔒 Privacy & Safety
+
+- **In-Memory Only:** Uploaded images and screenshots are analyzed strictly in-memory and never written to disk or sent to 3rd party trackers.
+- **Zero Telemetry:** No user analytics or tracking scripts are included.
+- **Credential Safety:** All keys remain strictly on the host in `.env` (gitignored).
+
+---
 
 ## 🤝 Contributing
 
-This project is part of Hacktoberfest 2026! Check the [Issues](../../issues) for good first issues.
+This project is open-source and part of **Hacktoberfest 2026**! Contributions, bug reports, and PRs are welcome.
+
+1. Fork the repo
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'feat: add amazing feature'`)
+4. Push to branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+---
 
 ## 📄 License
 
-MIT — see [LICENSE](LICENSE)
+MIT License — Copyright (c) 2026 YTxFSGAMERz. See [LICENSE](LICENSE) for full details.

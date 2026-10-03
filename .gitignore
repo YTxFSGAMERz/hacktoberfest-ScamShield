@@ -67,3 +67,7 @@ node_modules/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Agent & temporary files
+.agent/
+ui_screenshot_*.png
