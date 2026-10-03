@@ -300,11 +300,7 @@ tab_scan, tab_chat, tab_intel, tab_help, tab_alert = st.tabs([
 # TAB 1: 📸 SCREENSHOT SCANNER
 # ==============================================================================
 with tab_scan:
-    # ── 1-Click Quick Sample Pickers ──
-    st.markdown(f"##### {T('quick_samples_title')}")
-
     samples_dir = Path(__file__).parent / "tests" / "samples"
-    c1, c2, c3, c4, c5, c6 = st.columns(6)
 
     def load_sample(filename: str, label: str):
         path = samples_dir / filename
@@ -314,24 +310,40 @@ with tab_scan:
                 st.session_state.active_image_name = label
                 st.session_state.analysis_result = None
 
-    with c1:
+    # Genuine / Safe Examples Row
+    st.markdown(f"**{T('genuine_samples_title')}**")
+    g1, g2, g3, g4 = st.columns(4)
+    with g1:
+        if st.button(T("sample_safe_bank"), use_container_width=True):
+            load_sample("safe_bank_alert.png", "HDFC Debit Alert (Genuine)")
+    with g2:
+        if st.button(T("sample_safe_otp"), use_container_width=True):
+            load_sample("safe_login_otp.png", "Amazon Login OTP (Genuine)")
+    with g3:
+        if st.button(T("sample_safe_delivery"), use_container_width=True):
+            load_sample("safe_swiggy_delivery.png", "Swiggy Order Update (Genuine)")
+    with g4:
+        if st.button(T("sample_safe_ticket"), use_container_width=True):
+            load_sample("safe_irctc_ticket.png", "IRCTC Train Ticket (Genuine)")
+
+    # Fraudulent / Scam Examples Row
+    st.markdown(f"**{T('scam_samples_title')}**")
+    s1, s2, s3, s4, s5 = st.columns(5)
+    with s1:
         if st.button(T("sample_kyc"), use_container_width=True):
             load_sample("kyc_scam.png", "Fake SBI KYC SMS")
-    with c2:
+    with s2:
         if st.button(T("sample_lottery"), use_container_width=True):
             load_sample("lottery_scam.png", "Google Lucky Draw")
-    with c3:
+    with s3:
         if st.button(T("sample_upi"), use_container_width=True):
             load_sample("upi_phishing.png", "UPI PIN Phishing")
-    with c4:
+    with s4:
         if st.button(T("sample_job"), use_container_width=True):
             load_sample("job_scam.png", "Part-time Job Fraud")
-    with c5:
+    with s5:
         if st.button(T("sample_govt"), use_container_width=True):
             load_sample("govt_impersonation.png", "TRAI Disconnect Notice")
-    with c6:
-        if st.button(T("sample_safe"), use_container_width=True):
-            load_sample("safe_bank_alert.png", "Legitimate Bank Alert")
 
     st.markdown("<br>", unsafe_allow_html=True)
 

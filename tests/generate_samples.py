@@ -1,11 +1,10 @@
-"""Generate synthetic scam screenshot samples for testing.
+"""Generate synthetic genuine & scam screenshot samples for testing.
 
 Run: python tests/generate_samples.py
 """
 
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw
 from pathlib import Path
-import os
 
 SAMPLES_DIR = Path(__file__).parent / "samples"
 SAMPLES_DIR.mkdir(exist_ok=True)
@@ -19,7 +18,7 @@ def make_sms_screenshot(
     header_color: tuple = (0, 122, 255),
     width: int = 400,
 ) -> Path:
-    """Generate a fake SMS screenshot."""
+    """Generate a realistic SMS screenshot."""
     height = max(300, 80 + len(message) // 35 * 22 + 80)
     img = Image.new("RGB", (width, height), color=bg_color)
     draw = ImageDraw.Draw(img)
@@ -70,9 +69,64 @@ def make_sms_screenshot(
 
 
 def generate_all_samples():
-    print(f"Generating sample screenshots in {SAMPLES_DIR}...")
+    print(f"Generating realistic test samples in {SAMPLES_DIR}...")
 
-    # 1. KYC Scam
+    # ── GENUINE / SAFE SAMPLES ────────────────────────────────────────────────
+
+    # 1. Genuine Bank Debit Alert (Standard TRAI header format)
+    make_sms_screenshot(
+        "safe_bank_alert.png",
+        sender="VK-HDFCBK",
+        message=(
+            "Rs. 450.00 debited from HDFC Bank A/C **4092 on 03-Oct-26 at Swiggy. "
+            "Avl Bal: Rs. 24,150.70. Not you? Call 18002586161. "
+            "Never share OTP or UPI PIN with anyone."
+        ),
+        bg_color=(245, 255, 245),
+        header_color=(0, 75, 140),
+    )
+
+    # 2. Genuine Amazon Login OTP
+    make_sms_screenshot(
+        "safe_login_otp.png",
+        sender="BZ-AMAZON",
+        message=(
+            "849201 is your Amazon verification OTP. Valid for 10 minutes. "
+            "For security reasons, do not share this OTP with anyone, "
+            "including Amazon customer service."
+        ),
+        bg_color=(245, 250, 255),
+        header_color=(25, 35, 55),
+    )
+
+    # 3. Genuine Food Delivery Order Update
+    make_sms_screenshot(
+        "safe_swiggy_delivery.png",
+        sender="AD-SWIGGY",
+        message=(
+            "Your Swiggy order #982341 has been picked up by delivery partner Suresh. "
+            "Delivery OTP is 4192. Please share OTP only at your doorstep on delivery."
+        ),
+        bg_color=(255, 250, 245),
+        header_color=(252, 128, 25),
+    )
+
+    # 4. Genuine IRCTC Train Ticket Confirmation
+    make_sms_screenshot(
+        "safe_irctc_ticket.png",
+        sender="IRCTC",
+        message=(
+            "PNR: 8421098432, Train: 12952 / Rajdhani Exp, Date: 05-Oct-26, "
+            "Class: 3A, Coach: B3 Berth: 24 (Confirmed). "
+            "Happy Journey from IRCTC. Visit www.irctc.co.in"
+        ),
+        bg_color=(245, 248, 255),
+        header_color=(180, 40, 40),
+    )
+
+    # ── SCAM / FRAUD SAMPLES ──────────────────────────────────────────────────
+
+    # 5. Fake SBI KYC Scam
     make_sms_screenshot(
         "kyc_scam.png",
         sender="SBI-ALERT",
@@ -84,7 +138,7 @@ def generate_all_samples():
         header_color=(0, 100, 0),
     )
 
-    # 2. Lottery Scam
+    # 6. Lottery Scam
     make_sms_screenshot(
         "lottery_scam.png",
         sender="+44 7911 123456",
@@ -96,7 +150,7 @@ def generate_all_samples():
         header_color=(255, 140, 0),
     )
 
-    # 3. UPI Phishing
+    # 7. UPI Phishing
     make_sms_screenshot(
         "upi_phishing.png",
         sender="GP-ALERT",
@@ -108,7 +162,7 @@ def generate_all_samples():
         header_color=(66, 133, 244),
     )
 
-    # 4. Job Scam
+    # 8. Job Scam
     make_sms_screenshot(
         "job_scam.png",
         sender="HR-HIRING",
@@ -120,20 +174,7 @@ def generate_all_samples():
         header_color=(75, 0, 130),
     )
 
-    # 5. SAFE: Legitimate bank alert
-    make_sms_screenshot(
-        "safe_bank_alert.png",
-        sender="HDFC Bank",
-        message=(
-            "INR 2,500.00 debited from your HDFC Bank A/C XXXXXX8901 "
-            "on 03-Oct-26. Info: Amazon.in. Avl Bal: INR 45,230.50. "
-            "If not done by you, call 1800-266-4332."
-        ),
-        bg_color=(245, 255, 245),
-        header_color=(0, 91, 70),
-    )
-
-    # 6. Government impersonation
+    # 9. Government Impersonation
     make_sms_screenshot(
         "govt_impersonation.png",
         sender="TRAI-INDIA",
@@ -146,7 +187,6 @@ def generate_all_samples():
     )
 
     print(f"\nDone! {len(list(SAMPLES_DIR.glob('*.png')))} samples generated.")
-    print("Run tests with: pytest tests/ -v")
 
 
 if __name__ == "__main__":

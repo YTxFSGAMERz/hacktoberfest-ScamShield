@@ -21,13 +21,17 @@ STRINGS: dict[str, dict[str, str]] = {
         "select_language": "Language / भाषा / ભાષા",
 
         # Quick sample test buttons
-        "quick_samples_title": "⚡ Quick Test — Load Real Scam Examples:",
-        "sample_kyc": "🏦 SBI KYC SMS",
-        "sample_lottery": "🎁 Lucky Draw",
-        "sample_upi": "💳 UPI Phishing",
-        "sample_job": "💼 Job Fraud",
-        "sample_govt": "🏛️ TRAI Notice",
-        "sample_safe": "✅ Safe Bank Alert",
+        "genuine_samples_title": "✅ Genuine / Legitimate Messages (Test False-Positive Defense):",
+        "scam_samples_title": "🚨 Fraudulent / Scam Messages (Test Threat Detection):",
+        "sample_safe_bank": "🏦 HDFC Bank Debit Alert",
+        "sample_safe_otp": "🔑 Amazon Verification OTP",
+        "sample_safe_delivery": "🍔 Swiggy Delivery Status",
+        "sample_safe_ticket": "🚆 IRCTC Train Ticket",
+        "sample_kyc": "⚠️ Fake SBI KYC SMS",
+        "sample_lottery": "🎁 Google Lucky Draw",
+        "sample_upi": "💳 UPI PIN Trap",
+        "sample_job": "💼 Telegram Job Fraud",
+        "sample_govt": "🏛️ TRAI SIM Disconnect",
 
         # Upload section
         "upload_header": "📤 Upload Suspicious Screenshot",
@@ -115,13 +119,17 @@ STRINGS: dict[str, dict[str, str]] = {
         "select_language": "Language / भाषा / ભાષા",
 
         # Quick sample test buttons
-        "quick_samples_title": "⚡ तुरंत टेस्ट करें — असली स्कैम सैंपल चुनें:",
-        "sample_kyc": "🏦 फर्जी SBI KYC",
-        "sample_lottery": "🎁 लकी ड्रॉ प्राइज",
-        "sample_upi": "💳 UPI फिशिंग",
-        "sample_job": "💼 वर्क फ्रॉम होम",
-        "sample_govt": "🏛️ TRAI नोटिस",
-        "sample_safe": "✅ सुरक्षित बैंक अलर्ट",
+        "genuine_samples_title": "✅ असली और सुरक्षित संदेश (फॉल्स-पॉजिटिव जांचें):",
+        "scam_samples_title": "🚨 प्रमुख फ्रॉड और स्कैम संदेश (पहचान की जांच करें):",
+        "sample_safe_bank": "🏦 HDFC बैंक डेबिट अलर्ट",
+        "sample_safe_otp": "🔑 अमेज़न वेरिफिकेशन OTP",
+        "sample_safe_delivery": "🍔 स्विगी डिलीवरी स्टेटस",
+        "sample_safe_ticket": "🚆 IRCTC रेल टिकट",
+        "sample_kyc": "⚠️ फर्जी SBI KYC ब्लॉक",
+        "sample_lottery": "🎁 गूगल लकी ड्रॉ प्राइज",
+        "sample_upi": "💳 UPI पिन का जाल",
+        "sample_job": "💼 टेलीग्राम जॉब फ्रॉड",
+        "sample_govt": "🏛️ TRAI सिम डिस्कनेक्ट",
 
         # Upload section
         "upload_header": "📤 संदिग्ध स्क्रीनशॉट अपलोड करें",
@@ -209,13 +217,17 @@ STRINGS: dict[str, dict[str, str]] = {
         "select_language": "Language / भाषा / ભાષા",
 
         # Quick sample test buttons
-        "quick_samples_title": "⚡ તાત્કાલિક ટેસ્ટ — સાચા સ્કૅમ સેમ્પલ પસંદ કરો:",
-        "sample_kyc": "🏦 નકલી SBI KYC",
-        "sample_lottery": "🎁 લકી ડ્રો ઈનામ",
-        "sample_upi": "💳 UPI ફિશિંગ",
-        "sample_job": "💼 વર્ક ફ્રોમ હોમ",
-        "sample_govt": "🏛️ TRAI નોટિસ",
-        "sample_safe": "✅ સુરક્ષિત બેંક અલર્ટ",
+        "genuine_samples_title": "✅ સાચા અને સુરક્ષિત મેસેજ (ખોટી ચેતવણી અટકાવવાની તપાસ):",
+        "scam_samples_title": "🚨 જાણીતા સ્કૅમ અને ફ્રોડ (ખતરાની તપાસ કરો):",
+        "sample_safe_bank": "🏦 HDFC બેંક ડેબિટ અલર્ટ",
+        "sample_safe_otp": "🔑 એમેઝોન વેરિફિકેશન OTP",
+        "sample_safe_delivery": "🍔 સ્વિગી ડિલિવરી અપડેટ",
+        "sample_safe_ticket": "🚆 IRCTC ટ્રેન ટિકિટ",
+        "sample_kyc": "⚠️ નકલી SBI KYC બ્લોક",
+        "sample_lottery": "🎁 ગૂગલ લકી ડ્રો ઈનામ",
+        "sample_upi": "💳 UPI પિનની જાળ",
+        "sample_job": "💼 ટેલિગ્રામ જોબ ફ્રોડ",
+        "sample_govt": "🏛️ TRAI સિમ ડિસ્કનેક્ટ",
 
         # Upload section
         "upload_header": "📤 શંકાસ્પદ સ્ક્રીનશૉટ અપલોડ કરો",
