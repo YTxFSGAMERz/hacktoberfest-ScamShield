@@ -15,7 +15,17 @@ from flask_cors import CORS
 from scamshield.alert import send_discord_alert
 from scamshield.analyzer import analyze_screenshot, validate_image
 from scamshield.chat import chat_with_scamshield
-from scamshield.i18n import SUPPORTED_LANGUAGES, t
+try:
+    from scamshield.i18n import SUPPORTED_LANGUAGES, t
+except (ImportError, AttributeError):
+    SUPPORTED_LANGUAGES = {
+        "en": "English",
+        "hi": "हिंदी (Hindi)",
+        "gu": "ગુજરાતી (Gujarati)",
+    }
+    def t(lang, key):
+        return key
+
 from scamshield.intel import EMERGENCY_CONTACTS, GOLDEN_HOUR_STEPS, SCAM_TRENDS
 import traceback
 from scamshield.llm import get_provider_status

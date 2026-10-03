@@ -3,6 +3,14 @@
 Supported languages: English (en), Hindi (hi), Gujarati (gu)
 """
 
+from __future__ import annotations
+
+SUPPORTED_LANGUAGES: dict[str, str] = {
+    "en": "English",
+    "hi": "हिंदी (Hindi)",
+    "gu": "ગુજરાતી (Gujarati)",
+}
+
 STRINGS: dict[str, dict[str, str]] = {
     "en": {
         # App metadata
@@ -300,13 +308,6 @@ STRINGS: dict[str, dict[str, str]] = {
 }
 
 
-SUPPORTED_LANGUAGES = {
-    "en": "English",
-    "hi": "हिंदी (Hindi)",
-    "gu": "ગુજરાતી (Gujarati)",
-}
-
-
 def get_string(lang: str, key: str) -> str:
     """Get a localized string for the given language and key.
     Falls back to English if key is not found in the target language.
@@ -316,3 +317,5 @@ def get_string(lang: str, key: str) -> str:
 
 
 t = get_string
+
+__all__ = ["SUPPORTED_LANGUAGES", "STRINGS", "get_string", "t"]
