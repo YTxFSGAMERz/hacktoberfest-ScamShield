@@ -151,3 +151,69 @@ def test_i18n_fallback_unknown_key():
     # Unknown key should return the key itself
     result = get_string("en", "totally_nonexistent_key_xyz")
     assert result == "totally_nonexistent_key_xyz"
+
+
+# ── Automatic failover tests ───────────────────────────────────────────────────
+
+@patch("scamshield.llm._call_gemini")
+@patch("scamshield.llm._call_ollama")
+@patch("scamshield.llm._ollama_available")
+def test_gemini_failure_auto_switches_to_ollama(mock_ollama_avail, mock_call_ollama, mock_call_gemini, monkeypatch):
+    """If Gemini API key fails or errors, it must automatically failover to Ollama."""
+    from scamshield.llm import analyze_image
+
+    monkeypatch.setenv("GEMINI_API_KEY", "invalid_or_expired_key")
+    monkeypatch.setenv("LLM_PROVIDER", "auto")
+
+    mock_call_gemini.side_effect = Exception("403 Forbidden: API key invalid")
+    mock_ollama_avail.return_value = True
+    mock_call_ollama.return_value = json.dumps({
+        "verdict": "SCAM",
+        "risk_score": 90,
+        "confidence": "HIGH",
+        "scam_type": "UPI Fraud",
+        "summary": "Detected fraud via Ollama Cloud fallback",
+        "red_flags": ["Fake QR code"],
+        "advice": "Do not enter PIN",
+    })
+
+    data, provider = analyze_image(b"fake_image_bytes", "Analyze this", "System prompt")
+    assert provider == "ollama"
+    assert data["verdict"] == "SCAM"
+    assert data["risk_score"] == 90
+    assert mock_call_gemini.called
+    assert mock_call_ollama.called
+
+
+@patch("scamshield.chat._call_gemini_chat")
+@patch("scamshield.chat._call_ollama_chat")
+@patch("scamshield.chat._ollama_available")
+def test_gemini_chat_failure_auto_switches_to_ollama(mock_ollama_avail, mock_call_ollama_chat, mock_call_gemini_chat, monkeypatch):
+    """If Gemini chat fails or errors, it must automatically failover to Ollama."""
+    from scamshield.chat import chat_with_scamshield
+
+    monkeypatch.setenv("GEMINI_API_KEY", "invalid_key")
+    monkeypatch.setenv("LLM_PROVIDER", "auto")
+
+    mock_call_gemini_chat.side_effect = Exception("429 ResourceExhausted: Quota exceeded")
+    mock_ollama_avail.return_value = True
+    mock_call_ollama_chat.return_value = "Dial 1930 immediately (Ollama response)."
+
+    reply, provider = chat_with_scamshield([{"role": "user", "content": "Help me"}])
+    assert provider == "ollama"
+    assert "1930" in reply
+    assert mock_call_gemini_chat.called
+    assert mock_call_ollama_chat.called
+
+
+def test_ollama_cloud_headers(monkeypatch):
+    """Ollama Cloud should attach Bearer token and detect cloud base URL."""
+    from scamshield.llm import _get_ollama_headers, _get_ollama_base_url, _ollama_available
+
+    monkeypatch.setenv("OLLAMA_API_KEY", "test_ollama_cloud_secret_token")
+    monkeypatch.setenv("OLLAMA_BASE_URL", "https://ollama.com")
+
+    headers = _get_ollama_headers()
+    assert headers["Authorization"] == "Bearer test_ollama_cloud_secret_token"
+    assert _get_ollama_base_url() == "https://ollama.com"
+    assert _ollama_available() is True

@@ -19,6 +19,8 @@ from .llm import (
     LLM_PROVIDER,
     _gemini_available,
     _ollama_available,
+    _get_ollama_base_url,
+    _get_ollama_headers,
     LLMError,
 )
 
@@ -83,13 +85,17 @@ def _call_ollama_chat(
     messages: list[dict],
     system_instruction: str,
 ) -> str:
-    """Call local Ollama /api/chat with conversation history."""
+    """Call Ollama /api/chat with conversation history (local daemon or Ollama Cloud)."""
     ollama_messages = [{"role": "system", "content": system_instruction}]
     for msg in messages:
         ollama_messages.append({"role": msg["role"], "content": msg["content"]})
 
+    model = os.getenv("OLLAMA_MODEL", OLLAMA_MODEL)
+    base_url = _get_ollama_base_url()
+    headers = _get_ollama_headers()
+
     payload = {
-        "model": os.getenv("OLLAMA_MODEL", OLLAMA_MODEL),
+        "model": model,
         "messages": ollama_messages,
         "stream": False,
         "options": {
@@ -99,7 +105,8 @@ def _call_ollama_chat(
     }
 
     response = requests.post(
-        f"{os.getenv('OLLAMA_BASE_URL', OLLAMA_BASE_URL)}/api/chat",
+        f"{base_url}/api/chat",
+        headers=headers,
         json=payload,
         timeout=90,
     )
@@ -113,7 +120,7 @@ def chat_with_scamshield(
     current_analysis: dict | None = None,
     lang: str = "en",
 ) -> tuple[str, str]:
-    """Have a conversation with ScamShield AI assistant.
+    """Have a conversation with ScamShield AI assistant with automatic fallback.
 
     Args:
         messages: List of {"role": "user"|"assistant", "content": "..."}
@@ -157,24 +164,26 @@ def chat_with_scamshield(
 
     api_key = os.getenv("GEMINI_API_KEY", GEMINI_API_KEY)
     model = os.getenv("GEMINI_MODEL", GEMINI_MODEL)
-
-    # Provider routing (auto: try Gemini, fallback Ollama)
     provider_pref = os.getenv("LLM_PROVIDER", LLM_PROVIDER).lower()
+    errors = []
 
+    # 1. Primary: Try Gemini API
     if provider_pref in ("auto", "gemini") and _gemini_available():
         try:
             reply = _call_gemini_chat(gemini_contents, system_instruction, api_key, model)
             return reply, "gemini"
         except Exception as e:
-            logger.warning("Gemini chat failed (%s), attempting Ollama...", e)
-            if provider_pref == "gemini":
-                raise LLMError(f"Gemini chat failed: {e}") from e
+            logger.warning("Gemini chat failed (%s). Triggering automatic failover to Ollama Cloud / local...", e)
+            errors.append(f"Gemini: {e}")
 
-    if _ollama_available():
+    # 2. Failover: Try Ollama
+    if _ollama_available() or os.getenv("OLLAMA_API_KEY") or os.getenv("OLLAMA_BASE_URL") or provider_pref == "ollama":
         try:
             reply = _call_ollama_chat(messages, system_instruction)
             return reply, "ollama"
         except Exception as e:
-            raise LLMError(f"Ollama chat failed: {e}") from e
+            logger.warning("Ollama chat failed: %s", e)
+            errors.append(f"Ollama: {e}")
 
-    raise LLMError("No AI provider available for chat. Configure GEMINI_API_KEY in .env.")
+    error_summary = " | ".join(errors) if errors else "No AI provider configured"
+    raise LLMError(f"Chat failed across all AI providers: {error_summary}")
