@@ -71,3 +71,5 @@ node_modules/
 # Agent & temporary files
 .agent/
 ui_screenshot_*.png
+
+.vercel

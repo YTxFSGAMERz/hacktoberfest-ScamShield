@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ScamShield — AI Cyber Defense & Scam Analyzer</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220%22%200%22%20100%22%20100%22><text y=%22.9em%22 font-size=%2290%22>🛡️</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Ambient cyber glow background -->
+  <div class="cyber-glow-bg"></div>
+
+  <!-- Header -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="brand">
+        <div class="brand-icon">🛡️</div>
+        <div class="brand-text">
+          <div class="brand-title">SCAMSHIELD</div>
+          <div class="brand-subtitle" id="tagline-text">AI Cyber Defense & Fraud Analyzer</div>
+        </div>
+      </div>
+      <div class="header-controls">
+        <div class="status-pill">
+          <span class="pulse-dot"></span>
+          <span class="status-text">GEMMA 4 ONLINE</span>
+        </div>
+        <div class="lang-selector-wrap">
+          <select id="lang-select" class="lang-select" aria-label="Language">
+            <option value="en">English (EN)</option>
+            <option value="hi">हिंदी (HI)</option>
+            <option value="gu">ગુજરાતી (GU)</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Telemetry Stat Bar -->
+  <section class="telemetry-bar">
+    <div class="telemetry-grid">
+      <div class="telemetry-item">
+        <span class="telemetry-val">9</span>
+        <span class="telemetry-label" id="lbl-samples">Test Vectors</span>
+      </div>
+      <div class="telemetry-item">
+        <span class="telemetry-val">3</span>
+        <span class="telemetry-label" id="lbl-languages">Languages (EN/HI/GU)</span>
+      </div>
+      <div class="telemetry-item">
+        <span class="telemetry-val">1930</span>
+        <span class="telemetry-label" id="lbl-helpline">Cyber Cell Ready</span>
+      </div>
+      <div class="telemetry-item">
+        <span class="telemetry-val highlight">Gemma 4</span>
+        <span class="telemetry-label" id="lbl-vision">Vision Reasoning</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Container -->
+  <main class="main-container">
+    <!-- Tabs Navigation -->
+    <nav class="nav-tabs" role="tablist">
+      <button class="tab-btn active" data-tab="scanner" role="tab" aria-selected="true">
+        <span class="tab-icon">🔍</span>
+        <span class="tab-label" id="tab-lbl-scanner">Scanner</span>
+      </button>
+      <button class="tab-btn" data-tab="chat" role="tab" aria-selected="false">
+        <span class="tab-icon">💬</span>
+        <span class="tab-label" id="tab-lbl-chat">AI Assistant</span>
+      </button>
+      <button class="tab-btn" data-tab="intel" role="tab" aria-selected="false">
+        <span class="tab-icon">📚</span>
+        <span class="tab-label" id="tab-lbl-intel">Threat Intel</span>
+      </button>
+      <button class="tab-btn" data-tab="emergency" role="tab" aria-selected="false">
+        <span class="tab-icon">🚨</span>
+        <span class="tab-label" id="tab-lbl-emergency">Helplines</span>
+      </button>
+      <button class="tab-btn" data-tab="alerts" data-tab-name="alerts" role="tab" aria-selected="false">
+        <span class="tab-icon">📣</span>
+        <span class="tab-label" id="tab-lbl-alerts">Family Alert</span>
+      </button>
+    </nav>
+
+    <!-- TAB 1: SCANNER -->
+    <section id="tab-scanner" class="tab-content active" role="tabpanel">
+      <!-- Quick Test Chips -->
+      <div class="chip-container">
+        <div class="chip-group">
+          <span class="chip-group-label" id="lbl-genuine-samples">✅ Genuine / Legitimate:</span>
+          <button class="sample-chip genuine" data-file="safe_login_otp.png">Amazon OTP</button>
+          <button class="sample-chip genuine" data-file="safe_bank_alert.png">HDFC Debit</button>
+          <button class="sample-chip genuine" data-file="safe_swiggy_delivery.png">Swiggy Order</button>
+          <button class="sample-chip genuine" data-file="safe_irctc_ticket.png">IRCTC Ticket</button>
+        </div>
+        <div class="chip-group">
+          <span class="chip-group-label" id="lbl-scam-samples">🚨 Fraudulent / Threats:</span>
+          <button class="sample-chip scam" data-file="kyc_scam.png">SBI KYC Block</button>
+          <button class="sample-chip scam" data-file="lottery_scam.png">Lucky Draw</button>
+          <button class="sample-chip scam" data-file="upi_phishing.png">UPI Trap</button>
+          <button class="sample-chip scam" data-file="job_scam.png">Telegram Job</button>
+          <button class="sample-chip scam" data-file="govt_impersonation.png">TRAI Notice</button>
+        </div>
+      </div>
+
+      <!-- Upload Grid -->
+      <div class="scanner-layout">
+        <!-- Left: Upload Card -->
+        <div class="glass-card upload-card">
+          <h2 class="card-title" id="lbl-upload-title">📤 Upload Suspicious Screenshot</h2>
+          <p class="card-subtitle" id="lbl-upload-desc">Drop an SMS, WhatsApp screenshot, fake UPI QR, bank debit alert, or app prompt.</p>
+
+          <div class="drop-zone" id="drop-zone">
+            <input type="file" id="file-input" accept="image/png,image/jpeg,image/webp" style="display:none;">
+            <div class="drop-zone-content">
+              <span class="drop-icon">📸</span>
+              <p class="drop-text" id="lbl-drag-drop">Drag & drop image here or <span class="browse-link">browse</span></p>
+              <span class="drop-hint">PNG, JPG, WEBP (Max 10 MB)</span>
+            </div>
+            <!-- Image preview overlay -->
+            <div class="preview-wrap" id="preview-wrap" style="display:none;">
+              <img id="preview-img" alt="Preview">
+              <button class="remove-btn" id="remove-img-btn" title="Remove image">✕</button>
+            </div>
+          </div>
+
+          <div class="sender-input-wrap">
+            <label for="sender-input" id="lbl-sender-header">TRAI / SMS Header (Optional):</label>
+            <input type="text" id="sender-input" placeholder="e.g. VK-AMZNOT, AD-HDFCBK, or 10-digit number">
+            <span class="input-hint">6-character headers indicate authentic registered Indian enterprises.</span>
+          </div>
+
+          <button id="analyze-btn" class="cyber-btn primary-btn" disabled>
+            <span class="btn-spinner" id="analyze-spinner" style="display:none;"></span>
+            <span class="btn-text" id="lbl-analyze-btn">🛡️ Analyze with Gemma 4</span>
+          </button>
+        </div>
+
+        <!-- Right: Results Card -->
+        <div class="glass-card results-card" id="results-card">
+          <div class="empty-state" id="empty-state">
+            <div class="empty-icon">🛡️</div>
+            <h3 id="lbl-awaiting-title">Awaiting Screenshot</h3>
+            <p id="lbl-awaiting-desc">Upload an image or pick a test sample above to execute real-time Gemma 4 reasoning.</p>
+          </div>
+
+          <!-- Active Verdict Display -->
+          <div class="verdict-container" id="verdict-container" style="display:none;">
+            <div class="verdict-header">
+              <div class="verdict-badge" id="verdict-badge">SAFE</div>
+              <div class="risk-meter-wrap">
+                <div class="circular-chart" id="circular-chart">
+                  <span class="chart-score" id="chart-score">5</span>
+                  <span class="chart-label">/ 100</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Legit banner if safe -->
+            <div class="legit-banner" id="legit-banner" style="display:none;">
+              <span class="legit-icon">✅</span>
+              <div class="legit-text">
+                <strong>Genuine Message Confirmed</strong>
+                <p>Consistent with official registered communication. Low threat probability.</p>
+              </div>
+            </div>
+
+            <!-- Summary & Details -->
+            <div class="summary-box">
+              <h4 id="lbl-summary">Executive Summary</h4>
+              <p id="summary-text"></p>
+            </div>
+
+            <!-- Red Flags & Signals -->
+            <div class="red-flags-box" id="red-flags-box">
+              <h4 id="lbl-red-flags">Detected Signals & Red Flags</h4>
+              <ul id="red-flags-list" class="signals-list"></ul>
+            </div>
+
+            <!-- Action Checklist -->
+            <div class="action-box">
+              <h4 id="lbl-action-plan">Recommended Actions</h4>
+              <ul id="action-list" class="checklist"></ul>
+            </div>
+
+            <!-- Model Reasoning Expander -->
+            <details class="reasoning-expander">
+              <summary>🧠 Gemma 4 Model Reasoning</summary>
+              <div class="reasoning-content" id="reasoning-text"></div>
+            </details>
+
+            <!-- Quick Action Buttons -->
+            <div class="result-actions">
+              <button class="cyber-btn secondary-btn" id="send-to-chat-btn">💬 Ask AI Assistant</button>
+              <button class="cyber-btn danger-btn" id="send-to-alert-btn">🚨 Alert Family</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 2: AI SAFETY CHAT -->
+    <section id="tab-chat" class="tab-content" role="tabpanel">
+      <div class="glass-card chat-card">
+        <div class="chat-header">
+          <div class="chat-header-info">
+            <h3>💬 ScamShield AI Safety Assistant</h3>
+            <p id="lbl-chat-desc">Ask questions, verify calls, check suspicious links, or get urgent guidance.</p>
+          </div>
+          <div id="scan-context-badge" class="context-badge" style="display:none;">
+            <span>📎 Screenshot Analysis Attached</span>
+          </div>
+        </div>
+
+        <div class="chat-thread" id="chat-thread">
+          <div class="chat-bubble bot-bubble">
+            <div class="bubble-avatar">🛡️</div>
+            <div class="bubble-body">
+              <p>Hello! I am your AI Safety Assistant powered by Gemma 4. How can I help protect you today?</p>
+              <div class="chat-starters">
+                <button class="starter-chip" data-prompt="Someone from CBI called me on Skype. What should I do?">🚨 CBI / Police Skype Call</button>
+                <button class="starter-chip" data-prompt="I received a link to update electricity bill, is it fake?">⚡ Electricity Bill SMS</button>
+                <button class="starter-chip" data-prompt="Can someone steal money if I scan their QR code to receive payment?">💳 UPI QR Refund Trap</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="chat-input-bar">
+          <input type="text" id="chat-input" placeholder="Type your question or paste suspicious message...">
+          <button id="chat-send-btn" class="cyber-btn primary-btn">
+            <span>Send</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 3: THREAT INTEL -->
+    <section id="tab-intel" class="tab-content" role="tabpanel">
+      <div class="intel-header">
+        <h2>📊 Active Indian Cyber Scam Modus Operandi</h2>
+        <p>Know the psychological triggers and deceptive tactics used by modern fraud rings.</p>
+      </div>
+      <div class="intel-grid" id="intel-grid">
+        <!-- Injected dynamically via JS from /api/intel -->
+      </div>
+    </section>
+
+    <!-- TAB 4: EMERGENCY HELPLINES -->
+    <section id="tab-emergency" class="tab-content" role="tabpanel">
+      <div class="emergency-hero">
+        <div class="emergency-badge">🚨 CRITICAL HELPLINE</div>
+        <h1>National Cyber Crime Helpline: <a href="tel:1930" class="helpline-link">1930</a></h1>
+        <p>If you sent money or shared OTP with a fraudster within the last 2 hours, call <strong>1930</strong> immediately to invoke the Golden Hour inter-bank fund freeze.</p>
+      </div>
+
+      <div class="golden-hour-grid">
+        <div class="glass-card">
+          <h3>⏱️ Golden Hour 4-Step Recovery Checklist</h3>
+          <ol class="golden-hour-list" id="golden-hour-list">
+            <!-- Injected via JS -->
+          </ol>
+        </div>
+
+        <div class="glass-card">
+          <h3>🏛️ Official Indian Government Portals</h3>
+          <div class="portals-list">
+            <a href="https://cybercrime.gov.in" target="_blank" rel="noopener" class="portal-card">
+              <strong>cybercrime.gov.in</strong>
+              <span>National Cybercrime Reporting Portal</span>
+            </a>
+            <a href="https://sancharsaathi.gov.in/sfc/" target="_blank" rel="noopener" class="portal-card">
+              <strong>Chakshu (Sanchar Saathi)</strong>
+              <span>Report suspected fraud communications</span>
+            </a>
+            <a href="https://sancharsaathi.gov.in" target="_blank" rel="noopener" class="portal-card">
+              <strong>Sanchar Saathi (CEIR)</strong>
+              <span>Block lost or stolen mobile devices</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 5: FAMILY ALERT -->
+    <section id="tab-alerts" class="tab-content" role="tabpanel">
+      <div class="glass-card alert-card">
+        <h2>📣 Family Alert Center</h2>
+        <p>Broadcast high-visibility fraud warnings directly to your family's Discord server or copy formatted security alerts for WhatsApp.</p>
+
+        <div class="form-group">
+          <label for="discord-webhook">Discord Webhook URL (Optional):</label>
+          <input type="url" id="discord-webhook" placeholder="https://discord.com/api/webhooks/...">
+          <span class="input-hint">Create a webhook in Discord Server Settings → Integrations → Webhooks.</span>
+        </div>
+
+        <div class="alert-actions">
+          <button id="send-discord-btn" class="cyber-btn primary-btn">🚀 Dispatch Discord Alert</button>
+          <button id="copy-clipboard-btn" class="cyber-btn secondary-btn">📋 Copy for WhatsApp / SMS</button>
+        </div>
+
+        <div id="alert-status-msg" class="status-msg" style="display:none;"></div>
+
+        <div class="alert-preview-wrap">
+          <h4>Alert Preview Format</h4>
+          <pre class="alert-preview" id="alert-preview-text">🛡️ SCAMSHIELD FRAUD ADVISORY
+Verdict: SCAM | Risk Score: 92/100
+Please do not click links or share OTPs.</pre>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="app-footer">
+    <div class="footer-container">
+      <p>ScamShield • Hacktoberfest 2026 • Built with Google Gemma 4</p>
+      <p class="disclaimer">⚠️ For cyber-defense awareness. Always verify financial transactions directly with your bank branch.</p>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

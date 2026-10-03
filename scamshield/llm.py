@@ -94,6 +94,23 @@ def get_provider() -> str:
     )
 
 
+def get_provider_status() -> dict:
+    """Return dictionary of current provider availability and config."""
+    gemini_ok = _gemini_available()
+    ollama_ok = _ollama_available()
+    try:
+        active = get_provider()
+    except Exception:
+        active = "none"
+    return {
+        "active_provider": active,
+        "gemini_available": gemini_ok,
+        "ollama_available": ollama_ok,
+        "gemini_model": os.getenv("GEMINI_MODEL", GEMINI_MODEL),
+        "ollama_model": os.getenv("OLLAMA_MODEL", OLLAMA_MODEL),
+    }
+
+
 # ── Image preprocessing ────────────────────────────────────────────────────────
 
 def _prepare_image(image_bytes: bytes, max_size: tuple[int, int] = (1024, 1024)) -> bytes:

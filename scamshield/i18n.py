@@ -300,9 +300,19 @@ STRINGS: dict[str, dict[str, str]] = {
 }
 
 
+SUPPORTED_LANGUAGES = {
+    "en": "English",
+    "hi": "हिंदी (Hindi)",
+    "gu": "ગુજરાતી (Gujarati)",
+}
+
+
 def get_string(lang: str, key: str) -> str:
     """Get a localized string for the given language and key.
     Falls back to English if key is not found in the target language.
     """
     lang = lang if lang in STRINGS else "en"
     return STRINGS[lang].get(key) or STRINGS["en"].get(key, key)
+
+
+t = get_string

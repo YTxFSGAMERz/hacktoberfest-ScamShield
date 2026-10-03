@@ -6,6 +6,8 @@ ScamShield is specifically calibrated to protect Indian citizens from rampant fr
 
 Built for **Hacktoberfest 2026**.
 
+🌐 **Live Web Application (Vercel):** [https://hacktoberfest-scamshield.vercel.app](https://hacktoberfest-scamshield.vercel.app)
+
 ---
 
 ![ScamShield UI Preview](assets/preview_scanner.png)
@@ -14,6 +16,7 @@ Built for **Hacktoberfest 2026**.
 
 ## ✨ Key Features
 
+- ⚡ **Full-Stack Free Cloud Deployment** — Runs natively on Vercel Serverless (Python API + edge-optimized Cyber-Shield frontend) as well as locally with Streamlit.
 - 🤖 **Gemma 4 AI Reasoning** — Powered by `gemma-4-26b-a4b-it` via Gemini API (primary) with native thought token extraction, and local Ollama `gemma4:e4b` (offline fallback).
 - ⚖️ **False-Positive Resistance** — Differentiates genuine bank debits, official TRAI sender headers (e.g. `AD-HDFCBK`, `VK-AMZNOT`), and routine OTPs from actual phishing traps.
 - 💬 **Interactive AI Safety Assistant** — Multi-turn conversational dashboard allowing users to ask questions like *"Someone from CBI called me on Skype, what should I do?"* with full screenshot scan context.
@@ -21,7 +24,7 @@ Built for **Hacktoberfest 2026**.
 - 🚨 **Golden Hour Recovery Protocol** — Direct access to critical emergency resources: National Cyber Crime Helpline `1930`, `cybercrime.gov.in`, Chakshu fraud reporting, and Sanchar Saathi IMEI blocking.
 - 📣 **Family Alert Center** — One-click Discord webhook alert dispatching colored risk embeds (Green / Orange / Red) with automatic clipboard fallback.
 - 🌍 **Trilingual Support** — Complete native localization across English, Hindi, and Gujarati for both UI elements and AI reasoning outputs.
-- ⚡ **1-Click Test Scenarios** — Built-in quick chip selectors featuring 4 genuine and 5 scam screenshot test cases.
+- 🎯 **1-Click Test Scenarios** — Built-in quick chip selectors featuring 4 genuine and 5 scam screenshot test cases.
 
 ---
 
@@ -85,7 +88,15 @@ Open [http://localhost:8501](http://localhost:8501) in your browser.
 
 ```
 ScamShield/
-├── app.py                     # Streamlit Cyber-Shield UI (5 tabs, glassmorphic dark theme)
+├── api/
+│   ├── index.py               # Vercel Serverless Python API (Flask WSGI handler)
+│   └── requirements.txt       # Optimized serverless function dependencies
+├── public/                    # Cloud-edge static frontend (Vercel Global CDN)
+│   ├── index.html             # Cyber-Shield UI (5 tabs, glassmorphic layout)
+│   ├── style.css              # Cyberpunk dark theme & animations
+│   ├── app.js                 # Client app with trilingual toggle & REST client
+│   └── samples/               # 9 static synthetic test vector screenshots
+├── app.py                     # Streamlit Cyber-Shield UI (alternative local / Streamlit Cloud runner)
 ├── scamshield/
 │   ├── analyzer.py            # Multimodal verification & risk scoring pipeline
 │   ├── llm.py                 # Gemma 4 LLM driver (Gemini REST + Ollama fallback)
@@ -101,7 +112,8 @@ ScamShield/
 │   ├── test_chat_intel.py     # Chat assistant & threat intel tests
 │   └── samples/               # 9 synthetic screenshots (4 genuine + 5 scam)
 ├── assets/                    # UI previews and badges
-├── requirements.txt
+├── vercel.json                # Vercel rewrite configuration for serverless Python
+├── requirements.txt           # Core Python dependencies
 ├── pytest.ini
 ├── LICENSE                    # MIT License
 └── README.md
