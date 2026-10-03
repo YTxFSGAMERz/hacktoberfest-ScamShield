@@ -46,7 +46,7 @@ STRINGS: dict[str, dict[str, str]] = {
         "alert_no_result": "Please analyze an image first before sending an alert.",
 
         # Provider info
-        "provider_gemini": "🌐 Using Gemini API (gemma-4-e4b-it)",
+        "provider_gemini": "🌐 Using Gemini API (gemma-4-26b-a4b-it)",
         "provider_ollama": "🖥️ Using Local Ollama (gemma4:e4b)",
         "provider_error": "❌ No AI provider available. Check your .env configuration.",
 
@@ -103,7 +103,7 @@ STRINGS: dict[str, dict[str, str]] = {
         "alert_no_result": "अलर्ट भेजने से पहले कृपया पहले किसी छवि का विश्लेषण करें।",
 
         # Provider info
-        "provider_gemini": "🌐 Gemini API उपयोग हो रहा है (gemma-4-e4b-it)",
+        "provider_gemini": "🌐 Gemini API उपयोग हो रहा है (gemma-4-26b-a4b-it)",
         "provider_ollama": "🖥️ स्थानीय Ollama उपयोग हो रहा है (gemma4:e4b)",
         "provider_error": "❌ कोई AI प्रदाता उपलब्ध नहीं। अपनी .env कॉन्फ़िगरेशन जांचें।",
 
@@ -160,7 +160,7 @@ STRINGS: dict[str, dict[str, str]] = {
         "alert_no_result": "અલર્ટ મોકલ્યા પહેલા કૃપા કરીને પ્રથમ છબી વિશ્લેષણ કરો.",
 
         # Provider info
-        "provider_gemini": "🌐 Gemini API ઉપયોગ થઈ રહ્યો છે (gemma-4-e4b-it)",
+        "provider_gemini": "🌐 Gemini API ઉપયોગ થઈ રહ્યો છે (gemma-4-26b-a4b-it)",
         "provider_ollama": "🖥️ સ્થાનિક Ollama ઉપયોગ થઈ રહ્યો છે (gemma4:e4b)",
         "provider_error": "❌ કોઈ AI પ્રદાતા ઉપલબ્ધ નથી. તમારી .env ગોઠવણી તપાસો.",
 

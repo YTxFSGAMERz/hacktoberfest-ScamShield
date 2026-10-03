@@ -32,15 +32,10 @@ logger = logging.getLogger(__name__)
 # ── Configuration ─────────────────────────────────────────────────────────────
 LLM_PROVIDER = os.getenv("LLM_PROVIDER", "auto").lower()
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
-GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemma-4-e4b-it")
+GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemma-4-26b-a4b-it")
 OLLAMA_MODEL = os.getenv("OLLAMA_MODEL", "gemma4:e4b")
 OLLAMA_BASE_URL = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
 
-# Gemini REST endpoint (avoids SDK version conflicts)
-GEMINI_REST_URL = (
-    f"https://generativelanguage.googleapis.com/v1beta/models/"
-    f"{GEMINI_MODEL}:generateContent?key={GEMINI_API_KEY}"
-)
 
 
 class LLMError(Exception):
@@ -138,12 +133,15 @@ def _call_gemini(image_bytes: bytes, user_prompt: str, system_prompt: str) -> st
         ],
         "generationConfig": {
             "temperature": 0.1,
-            "maxOutputTokens": 1024,
-            "responseMimeType": "application/json",
+            "maxOutputTokens": 2048,
         },
     }
 
-    response = requests.post(GEMINI_REST_URL, json=payload, timeout=60)
+    api_key = os.getenv("GEMINI_API_KEY", GEMINI_API_KEY)
+    model = os.getenv("GEMINI_MODEL", GEMINI_MODEL)
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={api_key}"
+
+    response = requests.post(url, json=payload, timeout=60)
     response.raise_for_status()
 
     data = response.json()
@@ -151,7 +149,13 @@ def _call_gemini(image_bytes: bytes, user_prompt: str, system_prompt: str) -> st
     if not candidates:
         raise LLMError(f"Gemini returned no candidates: {data}")
 
-    text = candidates[0]["content"]["parts"][0]["text"]
+    parts = candidates[0].get("content", {}).get("parts", [])
+    # Separate thoughts from answer text (Gemma 4 has thought tokens)
+    answer_parts = [p.get("text", "") for p in parts if not p.get("thought", False)]
+    if answer_parts:
+        text = "".join(answer_parts)
+    else:
+        text = parts[-1].get("text", "") if parts else ""
     return text
 
 

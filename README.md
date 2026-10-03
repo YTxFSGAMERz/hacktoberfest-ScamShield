@@ -8,7 +8,7 @@ Built for Hacktoberfest 2026.
 
 ## ✨ Features
 
-- 🤖 **Gemma 4 AI** — Uses `gemma-4-e4b-it` via Gemini API (primary) or local Ollama `gemma4:e4b` (fallback)
+- 🤖 **Gemma 4 AI** — Uses `gemma-4-26b-a4b-it` via Gemini API (primary) or local Ollama `gemma4:e4b` (fallback)
 - 🌍 **Trilingual** — English, Hindi (हिंदी), and Gujarati (ગુજરાતી) UI and AI output
 - 📸 **Screenshot Analysis** — Upload images of scam messages, phishing sites, fake UPI apps
 - 🚨 **Family Alert** — One-click Discord webhook notification to warn family members
@@ -53,8 +53,8 @@ DISCORD_WEBHOOK_URL=https://discord.com/api/webhooks/...
 # AI provider: auto | gemini | ollama
 LLM_PROVIDER=auto
 
-# Gemini model (Gemma 4 E4B instruction-tuned)
-GEMINI_MODEL=gemma-4-e4b-it
+# Gemini model (official Gemma 4 model on Gemini API)
+GEMINI_MODEL=gemma-4-26b-a4b-it
 
 # Ollama model
 OLLAMA_MODEL=gemma4:e4b
