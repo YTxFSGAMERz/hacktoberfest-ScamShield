@@ -1,0 +1,31 @@
+# ScamShield Hacktoberfest Labels
+# Labels to help contributors find good issues
+
+labels:
+  - name: "hacktoberfest"
+    color: "#FF6E00"
+    description: "Good for Hacktoberfest contributors"
+
+  - name: "good first issue"
+    color: "#7057FF"
+    description: "Good for newcomers"
+
+  - name: "help wanted"
+    color: "#008672"
+    description: "Extra attention is needed"
+
+  - name: "bug"
+    color: "#D73A4A"
+    description: "Something isn't working"
+
+  - name: "enhancement"
+    color: "#A2EEEF"
+    description: "New feature or request"
+
+  - name: "documentation"
+    color: "#0075CA"
+    description: "Improvements or additions to documentation"
+
+  - name: "i18n"
+    color: "#E4E669"
+    description: "Internationalization / translation"
