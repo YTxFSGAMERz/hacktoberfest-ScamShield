@@ -150,13 +150,13 @@ def _call_gemini(image_bytes: bytes, user_prompt: str, system_prompt: str) -> st
         raise LLMError(f"Gemini returned no candidates: {data}")
 
     parts = candidates[0].get("content", {}).get("parts", [])
-    # Separate thoughts from answer text (Gemma 4 has thought tokens)
+    # Separate thoughts from answer text (Gemma 4 has native thought tokens)
+    thought_parts = [p.get("text", "") for p in parts if p.get("thought", False)]
     answer_parts = [p.get("text", "") for p in parts if not p.get("thought", False)]
-    if answer_parts:
-        text = "".join(answer_parts)
-    else:
-        text = parts[-1].get("text", "") if parts else ""
-    return text
+
+    text = "".join(answer_parts) if answer_parts else (parts[-1].get("text", "") if parts else "")
+    reasoning = "\n\n".join(thought_parts).strip()
+    return text, reasoning
 
 
 # ── Ollama API ─────────────────────────────────────────────────────────────────
@@ -258,8 +258,11 @@ def analyze_image(
 
     if provider == "gemini":
         try:
-            raw_text = _call_gemini(image_bytes, user_prompt, system_prompt)
-            return _extract_json(raw_text), "gemini"
+            raw_text, reasoning = _call_gemini(image_bytes, user_prompt, system_prompt)
+            data = _extract_json(raw_text)
+            if reasoning and not data.get("reasoning"):
+                data["reasoning"] = reasoning
+            return data, "gemini"
         except Exception as e:
             if LLM_PROVIDER == "gemini":
                 raise LLMError(f"Gemini failed: {e}") from e
