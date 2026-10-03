@@ -225,7 +225,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.querySelectorAll(".sample-chip").forEach(c => c.classList.remove("active"));
   }
 
-  function handleFile(file) {
+  function handleFile(file, autoAnalyze = false) {
     currentFile = file;
     const reader = new FileReader();
     reader.onload = (e) => {
@@ -234,6 +234,9 @@ document.addEventListener("DOMContentLoaded", () => {
       previewWrap.style.display = "block";
       dropZone.querySelector(".drop-zone-content").style.display = "none";
       analyzeBtn.disabled = false;
+      if (autoAnalyze) {
+        runAnalysis();
+      }
     };
     reader.readAsDataURL(file);
   }
@@ -265,10 +268,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
         if (!res.ok) throw new Error("Failed to load sample image");
         const blob = await res.blob();
-        handleFile(new File([blob], fileName, { type: "image/png" }));
-
-        // Trigger analysis automatically for seamless testing
-        runAnalysis();
+        handleFile(new File([blob], fileName, { type: "image/png" }), true);
       } catch (err) {
         console.error("Sample load error:", err);
       }
@@ -470,14 +470,15 @@ document.addEventListener("DOMContentLoaded", () => {
         data.scam_trends.forEach(item => {
           const card = document.createElement("div");
           card.className = "intel-card";
+          const title = item[`title_${currentLanguage}`] || item.title || "";
+          const pattern = item[`pattern_${currentLanguage}`] || item.pattern || item.modus_operandi || "";
+          const realityCheck = item[`reality_check_${currentLanguage}`] || item.reality_check || item.defense || "";
           card.innerHTML = `
-            <span class="intel-badge">${item.severity || "HIGH THREAT"}</span>
-            <div class="intel-title">${item.title}</div>
-            <div class="intel-desc">${item.modus_operandi}</div>
-            <div class="intel-section-title">Red Flags:</div>
-            <ul>${(item.red_flags || []).map(f => `<li>• ${f}</li>`).join("")}</ul>
-            <div class="intel-section-title" style="margin-top:8px;">Defense:</div>
-            <p style="font-size:0.78rem; color:var(--safe-green); margin-top:2px;">${item.defense}</p>
+            <span class="intel-badge ${item.severity || 'HIGH'}">${item.severity || "HIGH THREAT"}</span>
+            <div class="intel-title">${title}</div>
+            <div class="intel-desc">${pattern}</div>
+            <div class="intel-section-title" style="margin-top:10px; color:#38BDF8;">🛡️ Official Reality Check:</div>
+            <p style="font-size:0.82rem; color:var(--safe-green); margin-top:4px; line-height:1.4;">${realityCheck}</p>
           `;
           intelGrid.appendChild(card);
         });

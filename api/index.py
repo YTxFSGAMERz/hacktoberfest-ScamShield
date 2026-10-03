@@ -20,7 +20,8 @@ from scamshield.intel import EMERGENCY_CONTACTS, GOLDEN_HOUR_STEPS, SCAM_TRENDS
 import traceback
 from scamshield.llm import get_provider_status
 
-app = Flask(__name__)
+PUBLIC_DIR = ROOT_DIR / "public"
+app = Flask(__name__, static_folder=str(PUBLIC_DIR), static_url_path="")
 CORS(app)
 
 
@@ -60,6 +61,22 @@ app.wsgi_app = VercelPathMiddleware(app.wsgi_app)
 
 
 @app.route("/", methods=["GET"])
+def index():
+    index_file = PUBLIC_DIR / "index.html"
+    if index_file.exists():
+        return send_file(str(index_file))
+    return health_check()
+
+
+@app.route("/<path:path>", methods=["GET"])
+def static_proxy(path: str):
+    target = PUBLIC_DIR / path
+    if target.exists() and target.is_file():
+        return send_file(str(target))
+    # If not found in public, check if it's an api route or 404
+    return jsonify({"error": f"File '{path}' not found"}), 404
+
+
 @app.route("/api", methods=["GET"])
 @app.route("/api/index.py", methods=["GET"])
 @app.route("/api/health", methods=["GET"])

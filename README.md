@@ -10,14 +10,21 @@ Built for **Hacktoberfest 2026**.
 
 ---
 
-![ScamShield UI Preview](assets/preview_scanner.png)
+### 🔍 Multimodal Scam Scanner & Risk Meter
+![ScamShield Scanner Preview](assets/preview_scanner.png)
+
+### 💬 Conversational AI Safety Assistant
+![ScamShield Chat Assistant](assets/preview_chat.png)
+
+### 📊 Indian Cyber Threat Intel & Reality Checks
+![ScamShield Threat Intel](assets/preview_intel.png)
 
 ---
 
 ## ✨ Key Features
 
-- ⚡ **Full-Stack Free Cloud Deployment** — Runs natively on Vercel Serverless (Python API + edge-optimized Cyber-Shield frontend) as well as locally with Streamlit.
-- 🤖 **Gemma 4 AI Reasoning** — Powered by `gemma-4-26b-a4b-it` via Gemini API (primary) with native thought token extraction, and local Ollama `gemma4:e4b` (offline fallback).
+- ⚡ **Full-Stack Free Cloud Deployment** — Runs natively on Vercel Serverless (Python API + edge-optimized Cyber-Shield frontend) as well as locally with Flask & Streamlit.
+- 🤖 **Gemma 4 AI Reasoning** — Powered by `gemma-4-26b-a4b-it` via Gemini API (primary) with automatic failover to Ollama Cloud / local `gemma4:e4b` on quota, rate limit, or API errors.
 - ⚖️ **False-Positive Resistance** — Differentiates genuine bank debits, official TRAI sender headers (e.g. `AD-HDFCBK`, `VK-AMZNOT`), and routine OTPs from actual phishing traps.
 - 💬 **Interactive AI Safety Assistant** — Multi-turn conversational dashboard allowing users to ask questions like *"Someone from CBI called me on Skype, what should I do?"* with full screenshot scan context.
 - 📚 **Threat Intel & Scam Encyclopedia** — Interactive breakdown of top Indian cyber scam modus operandi (Digital Arrest, Electricity SMS, UPI Phishing, Telegram Part-Time Jobs, Fake Loan APKs).
@@ -74,13 +81,15 @@ OLLAMA_MODEL=gemma4:e4b
 OLLAMA_BASE_URL=http://localhost:11434
 ```
 
-### Run Application
+### Run Application Locally
 
 ```bash
-streamlit run app.py
+# Recommended: Run the exact Cyber-Shield web server (same as Vercel)
+python run.py
 ```
+Open **[http://127.0.0.1:5000](http://127.0.0.1:5000)** in your browser.
 
-Open [http://localhost:8501](http://localhost:8501) in your browser.
+*(Alternatively, run `streamlit run app.py` for Streamlit-embedded mode).*
 
 ---
 
@@ -89,14 +98,16 @@ Open [http://localhost:8501](http://localhost:8501) in your browser.
 ```
 ScamShield/
 ├── api/
-│   ├── index.py               # Vercel Serverless Python API (Flask WSGI handler)
+│   ├── index.py               # Vercel Serverless Python API & Local Flask Server
 │   └── requirements.txt       # Optimized serverless function dependencies
-├── public/                    # Cloud-edge static frontend (Vercel Global CDN)
+├── public/                    # Unified Cyber-Shield Frontend (Static CDN & Local)
 │   ├── index.html             # Cyber-Shield UI (5 tabs, glassmorphic layout)
 │   ├── style.css              # Cyberpunk dark theme & animations
 │   ├── app.js                 # Client app with trilingual toggle & REST client
 │   └── samples/               # 9 static synthetic test vector screenshots
-├── app.py                     # Streamlit Cyber-Shield UI (alternative local / Streamlit Cloud runner)
+├── run.py                     # Local web application runner (serves exact UI on localhost)
+├── app.py                     # Dual local runner & Streamlit bridge
+├── streamlit_legacy.py        # Legacy Streamlit UI backup
 ├── scamshield/
 │   ├── analyzer.py            # Multimodal verification & risk scoring pipeline
 │   ├── llm.py                 # Gemma 4 LLM driver (Gemini REST + Ollama fallback)
@@ -111,7 +122,9 @@ ScamShield/
 │   ├── test_llm.py            # Gemma 4 driver & fallback tests
 │   ├── test_chat_intel.py     # Chat assistant & threat intel tests
 │   └── samples/               # 9 synthetic screenshots (4 genuine + 5 scam)
-├── assets/                    # UI previews and badges
+├── scripts/
+│   └── capture_screenshots.py # Automated Playwright browser preview generator
+├── assets/                    # High-res retina UI previews and badges
 ├── vercel.json                # Vercel rewrite configuration for serverless Python
 ├── requirements.txt           # Core Python dependencies
 ├── pytest.ini
