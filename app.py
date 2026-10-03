@@ -352,7 +352,7 @@ with tab_scan:
 
         with img_col:
             st.markdown(f"**Loaded Image:** `{st.session_state.active_image_name or 'Uploaded Screenshot'}`")
-            st.image(st.session_state.active_image_bytes, use_container_width=True)
+            st.image(st.session_state.active_image_bytes, width="stretch")
 
         with info_col:
             st.markdown("#### Ready for Gemma 4 Inspection")
