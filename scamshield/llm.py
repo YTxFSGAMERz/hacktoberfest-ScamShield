@@ -342,3 +342,106 @@ def analyze_image(
     # If all options exhausted
     error_summary = " | ".join(errors) if errors else "No AI provider configured"
     raise LLMError(f"ScamShield analysis failed across all AI providers: {error_summary}")
+
+
+def analyze_text(
+    text: str,
+    user_prompt: str,
+    system_prompt: str,
+    provider: str | None = None,
+) -> tuple[dict, str]:
+    """Analyze raw text (SMS/WhatsApp message) for scams using Gemini text mode.
+
+    Args:
+        text: The raw message text to analyze.
+        user_prompt: The analysis prompt (will have text injected).
+        system_prompt: The system/role prompt.
+        provider: "gemini" | "ollama" | None (auto-detect).
+
+    Returns:
+        (result_dict, provider_used)
+
+    Raises:
+        LLMError: If all providers fail.
+    """
+    if provider is None:
+        try:
+            provider = get_provider()
+        except Exception:
+            provider = "auto"
+
+    errors = []
+
+    # 1. Primary: Try Gemini API (text-only mode)
+    if provider in ("gemini", "auto") and _gemini_available():
+        try:
+            api_key = os.getenv("GEMINI_API_KEY", GEMINI_API_KEY)
+            model = os.getenv("GEMINI_MODEL", GEMINI_MODEL)
+            url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={api_key}"
+
+            payload = {
+                "system_instruction": {
+                    "parts": [{"text": system_prompt}]
+                },
+                "contents": [
+                    {
+                        "role": "user",
+                        "parts": [{"text": f"{user_prompt}\n\n--- MESSAGE TO ANALYZE ---\n{text}\n--- END MESSAGE ---"}],
+                    }
+                ],
+                "generationConfig": {
+                    "temperature": 0.1,
+                    "maxOutputTokens": 2048,
+                },
+            }
+
+            response = requests.post(url, json=payload, timeout=60)
+            response.raise_for_status()
+            data_json = response.json()
+            candidates = data_json.get("candidates", [])
+            if not candidates:
+                raise LLMError(f"Gemini text returned no candidates: {data_json}")
+
+            parts = candidates[0].get("content", {}).get("parts", [])
+            thought_parts = [p.get("text", "") for p in parts if p.get("thought", False)]
+            answer_parts = [p.get("text", "") for p in parts if not p.get("thought", False)]
+            raw_text = "".join(answer_parts) if answer_parts else (parts[-1].get("text", "") if parts else "")
+            reasoning = "\n\n".join(thought_parts).strip()
+
+            result = _extract_json(raw_text)
+            if reasoning and not result.get("reasoning"):
+                result["reasoning"] = reasoning
+            return result, "gemini"
+        except Exception as e:
+            logger.warning("Gemini text analysis failed (%s). Triggering automatic failover...", e)
+            errors.append(f"Gemini: {e}")
+
+    # 2. Failover: Try Ollama (text mode)
+    if _ollama_available() or os.getenv("OLLAMA_API_KEY") or provider == "ollama":
+        try:
+            model = os.getenv("OLLAMA_MODEL", OLLAMA_MODEL)
+            base_url = _get_ollama_base_url()
+            headers = _get_ollama_headers()
+
+            ollama_messages = [
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": f"{user_prompt}\n\n--- MESSAGE TO ANALYZE ---\n{text}\n--- END MESSAGE ---"},
+            ]
+            payload = {
+                "model": model,
+                "messages": ollama_messages,
+                "stream": False,
+                "format": "json",
+                "options": {"temperature": 0.1, "num_predict": 1024},
+            }
+            response = requests.post(f"{base_url}/api/chat", headers=headers, json=payload, timeout=90)
+            response.raise_for_status()
+            raw_text = response.json().get("message", {}).get("content", "")
+            result = _extract_json(raw_text)
+            return result, "ollama"
+        except Exception as e:
+            logger.warning("Ollama text analysis failed: %s", e)
+            errors.append(f"Ollama: {e}")
+
+    error_summary = " | ".join(errors) if errors else "No AI provider configured"
+    raise LLMError(f"Text analysis failed across all AI providers: {error_summary}")

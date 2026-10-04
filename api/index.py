@@ -15,6 +15,15 @@ from flask_cors import CORS
 from scamshield.alert import send_discord_alert
 from scamshield.analyzer import analyze_screenshot, validate_image
 from scamshield.chat import chat_with_scamshield
+from scamshield.scanner_text import analyze_text
+from scamshield.scanner_url import analyze_url
+from scamshield.scanner_phone import analyze_phone
+from scamshield.scanner_qr import analyze_qr
+from scamshield.quiz_data import QUIZ_QUESTIONS, QUIZ_BADGES, CATEGORY_COLORS
+from scamshield.victim_recovery import BANK_NUMBERS, get_golden_hour_status
+from scamshield.hygiene import HYGIENE_CHECKS, calculate_hygiene_score
+from scamshield.community import report_scam, check_community_reports, get_recent_reports
+
 try:
     from scamshield.i18n import SUPPORTED_LANGUAGES, t
 except (ImportError, AttributeError):
@@ -30,9 +39,26 @@ from scamshield.intel import EMERGENCY_CONTACTS, GOLDEN_HOUR_STEPS, SCAM_TRENDS
 import traceback
 from scamshield.llm import get_provider_status
 
+# Initialize Flask-Limiter for API protection
+try:
+    from flask_limiter import Limiter
+    from flask_limiter.util import get_remote_address
+    limiter = Limiter(
+        key_func=get_remote_address,
+        default_limits=["300 per hour", "60 per minute"],
+        storage_uri="memory://",
+    )
+    HAS_LIMITER = True
+except Exception:
+    HAS_LIMITER = False
+    limiter = None
+
 PUBLIC_DIR = ROOT_DIR / "public"
 app = Flask(__name__, static_folder=str(PUBLIC_DIR), static_url_path="")
 CORS(app)
+
+if HAS_LIMITER and limiter:
+    limiter.init_app(app)
 
 
 @app.errorhandler(Exception)
@@ -83,7 +109,6 @@ def static_proxy(path: str):
     target = PUBLIC_DIR / path
     if target.exists() and target.is_file():
         return send_file(str(target))
-    # If not found in public, check if it's an api route or 404
     return jsonify({"error": f"File '{path}' not found"}), 404
 
 
@@ -96,13 +121,27 @@ def health_check():
     return jsonify({
         "status": "healthy",
         "service": "ScamShield",
+        "version": "2.0.0-ultimate",
         "provider": status,
-        "languages": list(SUPPORTED_LANGUAGES.keys()),
-        "debug_path": request.path,
-        "debug_x_matched_path": request.headers.get("x-matched-path"),
-        "debug_x_forwarded_uri": request.headers.get("x-forwarded-uri"),
-        "debug_url": request.url,
+        "languages": SUPPORTED_LANGUAGES,
+        "features": [
+            "screenshot_vision_scanner",
+            "text_sms_analyzer",
+            "url_phishing_scanner",
+            "phone_intelligence_lookup",
+            "qr_code_decoder",
+            "scam_awareness_quiz",
+            "crowdsourced_community_db",
+            "victim_recovery_assistant",
+            "security_hygiene_checker",
+            "family_alert_center",
+        ],
     })
+
+
+@app.route("/api/languages", methods=["GET"])
+def get_languages():
+    return jsonify({"success": True, "languages": SUPPORTED_LANGUAGES})
 
 
 @app.route("/api/intel", methods=["GET"])
@@ -112,6 +151,9 @@ def get_intel():
         "emergency_contacts": EMERGENCY_CONTACTS,
         "scam_trends": SCAM_TRENDS,
         "golden_hour_steps": GOLDEN_HOUR_STEPS,
+        "quiz_badges": QUIZ_BADGES,
+        "quiz_total_questions": len(QUIZ_QUESTIONS),
+        "hygiene_total_checks": len(HYGIENE_CHECKS),
     })
 
 
@@ -148,6 +190,7 @@ def get_sample_image(filename: str):
     return jsonify({"error": "Sample image not found"}), 404
 
 
+# ── SCANNER 1: Screenshot Vision Analyzer ────────────────────────────────────
 @app.route("/api/analyze", methods=["POST"])
 @app.route("/analyze", methods=["POST"])
 def analyze():
@@ -184,6 +227,190 @@ def analyze():
         return jsonify({"error": str(exc)}), 500
 
 
+# ── SCANNER 2: Text / SMS Message Analyzer ───────────────────────────────────
+@app.route("/api/scan/text", methods=["POST"])
+def scan_text():
+    data = request.get_json(silent=True) or {}
+    text = data.get("text", "").strip()
+    language = data.get("language", "en")
+    sender_id = data.get("sender_id")
+
+    if not text:
+        return jsonify({"error": "No message text provided."}), 400
+
+    try:
+        result, provider = analyze_text(text, lang=language, sender_id=sender_id)
+        result["provider"] = provider
+        return jsonify({"success": True, "data": result})
+    except Exception as exc:
+        return jsonify({"error": str(exc)}), 500
+
+
+# ── SCANNER 3: URL Phishing Detector ──────────────────────────────────────────
+@app.route("/api/scan/url", methods=["POST"])
+def scan_url():
+    data = request.get_json(silent=True) or {}
+    url = data.get("url", "").strip()
+
+    if not url:
+        return jsonify({"error": "No URL provided."}), 400
+
+    try:
+        result = analyze_url(url)
+        return jsonify({"success": True, "data": result})
+    except Exception as exc:
+        return jsonify({"error": str(exc)}), 500
+
+
+# ── SCANNER 4: Phone Number Intelligence ──────────────────────────────────────
+@app.route("/api/scan/phone", methods=["POST"])
+def scan_phone():
+    data = request.get_json(silent=True) or {}
+    phone = data.get("phone", "").strip()
+
+    if not phone:
+        return jsonify({"error": "No phone number provided."}), 400
+
+    try:
+        result = analyze_phone(phone)
+        return jsonify({"success": True, "data": result})
+    except Exception as exc:
+        return jsonify({"error": str(exc)}), 500
+
+
+# ── SCANNER 5: QR Code Decoder & Analyzer ─────────────────────────────────────
+@app.route("/api/scan/qr", methods=["POST"])
+def scan_qr():
+    image_bytes = None
+    if request.is_json:
+        data = request.get_json(silent=True) or {}
+        b64 = data.get("image_base64", "")
+        if b64:
+            if "," in b64:
+                b64 = b64.split(",", 1)[1]
+            try:
+                image_bytes = base64.b64decode(b64)
+            except Exception:
+                return jsonify({"error": "Invalid base64 payload"}), 400
+    elif request.files and "file" in request.files:
+        image_bytes = request.files["file"].read()
+
+    if not image_bytes:
+        return jsonify({"error": "No QR image provided."}), 400
+
+    try:
+        result = analyze_qr(image_bytes)
+        return jsonify({"success": True, "data": result})
+    except Exception as exc:
+        return jsonify({"error": str(exc)}), 500
+
+
+# ── SCAM AWARENESS QUIZ ───────────────────────────────────────────────────────
+@app.route("/api/quiz", methods=["GET"])
+def get_quiz():
+    diff = request.args.get("difficulty", "all").lower()
+    limit = request.args.get("limit", type=int) or 15
+
+    if diff in ("beginner", "intermediate", "expert"):
+        filtered = [q for q in QUIZ_QUESTIONS if q.get("difficulty") == diff]
+    else:
+        filtered = list(QUIZ_QUESTIONS)
+
+    import random
+    sample_pool = list(filtered)
+    random.shuffle(sample_pool)
+    selected = sample_pool[:limit]
+
+    return jsonify({
+        "success": True,
+        "difficulty": diff,
+        "total_available": len(filtered),
+        "count": len(selected),
+        "questions": selected,
+        "badges": QUIZ_BADGES,
+        "category_colors": CATEGORY_COLORS,
+    })
+
+
+# ── CROWDSOURCED COMMUNITY DATABASE ──────────────────────────────────────────
+@app.route("/api/community/report", methods=["POST"])
+def community_report():
+    data = request.get_json(silent=True) or {}
+    scam_type = data.get("scam_type", "phone")
+    value = data.get("value", "").strip()
+    category = data.get("category", "General Fraud")
+    description = data.get("description", "").strip()
+    lang = data.get("language", "en")
+
+    if not value:
+        return jsonify({"error": "Entity value (phone/UPI/URL) is required."}), 400
+
+    res = report_scam(
+        scam_type=scam_type,
+        value=value,
+        description=description,
+        category=category,
+        lang=lang,
+    )
+    return jsonify(res)
+
+
+@app.route("/api/community/check", methods=["GET"])
+def community_check():
+    scam_type = request.args.get("type", "phone").lower()
+    value = request.args.get("value", "").strip()
+
+    if not value:
+        return jsonify({"error": "Value parameter is required"}), 400
+
+    res = check_community_reports(scam_type=scam_type, value=value)
+    return jsonify({"success": True, "data": res})
+
+
+@app.route("/api/community/recent", methods=["GET"])
+def community_recent():
+    limit = request.args.get("limit", default=10, type=int)
+    reports = get_recent_reports(limit=min(limit, 50))
+    return jsonify({"success": True, "reports": reports})
+
+
+# ── SECURITY HYGIENE ASSESSMENT ───────────────────────────────────────────────
+@app.route("/api/hygiene/checks", methods=["GET"])
+def hygiene_checks():
+    return jsonify({
+        "success": True,
+        "checks": HYGIENE_CHECKS,
+        "total": len(HYGIENE_CHECKS),
+    })
+
+
+@app.route("/api/hygiene/score", methods=["POST"])
+def hygiene_score():
+    data = request.get_json(silent=True) or {}
+    checked_ids = data.get("checked_ids", [])
+    result = calculate_hygiene_score(checked_ids)
+    return jsonify({"success": True, "data": result})
+
+
+# ── VICTIM RECOVERY ASSISTANT ─────────────────────────────────────────────────
+@app.route("/api/victim/banks", methods=["GET"])
+def victim_banks():
+    return jsonify({"success": True, "banks": BANK_NUMBERS})
+
+
+@app.route("/api/victim/status", methods=["POST"])
+def victim_status():
+    data = request.get_json(silent=True) or {}
+    minutes = data.get("minutes_elapsed", 30)
+    try:
+        minutes = int(minutes)
+    except (ValueError, TypeError):
+        minutes = 30
+    status = get_golden_hour_status(minutes)
+    return jsonify({"success": True, "data": status})
+
+
+# ── AI CHAT ASSISTANT ─────────────────────────────────────────────────────────
 @app.route("/api/chat", methods=["POST"])
 @app.route("/chat", methods=["POST"])
 def chat():
@@ -206,6 +433,7 @@ def chat():
         return jsonify({"error": str(exc)}), 500
 
 
+# ── ALERT DISPATCH ────────────────────────────────────────────────────────────
 @app.route("/api/alert", methods=["POST"])
 @app.route("/alert", methods=["POST"])
 def alert():

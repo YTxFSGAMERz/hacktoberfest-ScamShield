@@ -1,0 +1,57 @@
+[
+  {
+    "id": "seed_1",
+    "type": "phone",
+    "value": "+919310842109",
+    "category": "Digital Arrest / Fake Police",
+    "description": "Caller posed as Crime Branch officer claiming parcel seizure in Mumbai customs.",
+    "reports_count": 47,
+    "first_reported": "2026-09-12T10:14:00Z",
+    "last_reported": "2026-10-02T14:32:00Z",
+    "risk_level": "CRITICAL"
+  },
+  {
+    "id": "seed_2",
+    "type": "upi",
+    "value": "refund.desk921@oksbi",
+    "category": "UPI Refund Trap",
+    "description": "Sent collect request on PhonePe pretending to be Flipkart return refund executive.",
+    "reports_count": 83,
+    "first_reported": "2026-08-04T12:00:00Z",
+    "last_reported": "2026-10-03T08:15:00Z",
+    "risk_level": "CRITICAL"
+  },
+  {
+    "id": "seed_3",
+    "type": "url",
+    "value": "https://sbi-kyc-quickverify.xyz",
+    "category": "Bank Phishing",
+    "description": "Phishing portal harvesting SBI net banking credentials and OTP via SMS link.",
+    "reports_count": 112,
+    "first_reported": "2026-09-28T09:20:00Z",
+    "last_reported": "2026-10-03T18:05:00Z",
+    "risk_level": "CRITICAL"
+  },
+  {
+    "id": "seed_4",
+    "type": "whatsapp",
+    "value": "+923018471920",
+    "category": "Part-Time Task Scam",
+    "description": "WhatsApp message offering ₹5000/day for rating hotels and liking videos on YouTube.",
+    "reports_count": 64,
+    "first_reported": "2026-09-15T16:40:00Z",
+    "last_reported": "2026-10-02T11:22:00Z",
+    "risk_level": "HIGH"
+  },
+  {
+    "id": "seed_5",
+    "type": "phone",
+    "value": "+917000548192",
+    "category": "Electricity Bill Threat",
+    "description": "SMS threatening power cut tonight at 9:30 PM due to unpaid bill; asked to install AnyDesk.",
+    "reports_count": 39,
+    "first_reported": "2026-09-19T21:10:00Z",
+    "last_reported": "2026-10-01T20:45:00Z",
+    "risk_level": "HIGH"
+  }
+]
