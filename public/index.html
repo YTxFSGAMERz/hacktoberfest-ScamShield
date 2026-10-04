@@ -3,11 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ScamShield — AI Cyber Defense & Scam Analyzer</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220%22%200%22%20100%22%20100%22><text y=%22.9em%22 font-size=%2290%22>🛡️</text></svg>">
+  <title>ScamShield — AI Cyber Defense &amp; Scam Analyzer</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🛡️</text></svg>">
+  <link rel="manifest" href="manifest.json">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <!-- KaTeX Math Rendering CSS & JS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" crossorigin="anonymous">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" crossorigin="anonymous"></script>
+  <!-- Marked.js Markdown Engine -->
+  <script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+  <!-- DOMPurify HTML Sanitizer -->
+  <script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.2/dist/purify.min.js"></script>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -21,7 +30,7 @@
         <div class="brand-icon">🛡️</div>
         <div class="brand-text">
           <div class="brand-title">SCAMSHIELD</div>
-          <div class="brand-subtitle" id="tagline-text">AI Cyber Defense & Fraud Analyzer</div>
+          <div class="brand-subtitle" id="tagline-text">AI Cyber Defense &amp; Fraud Analyzer</div>
         </div>
       </div>
       <div class="header-controls">
@@ -34,6 +43,28 @@
             <option value="en">English (EN)</option>
             <option value="hi">हिंदी (HI)</option>
             <option value="gu">ગુજરાતી (GU)</option>
+            <option value="ta">தமிழ் (TA)</option>
+            <option value="te">తెలుగు (TE)</option>
+            <option value="bn">বাংলা (BN)</option>
+            <option value="mr">मराठी (MR)</option>
+            <option value="kn">ಕನ್ನಡ (KN)</option>
+            <option value="ml">മലയാളം (ML)</option>
+            <option value="pa">ਪੰਜਾਬੀ (PA)</option>
+            <option value="ur">اردو (UR)</option>
+            <option value="or">ओड़िया (OR)</option>
+            <option value="as">অসমীয়া (AS)</option>
+            <option value="fr">Français (FR)</option>
+            <option value="es">Español (ES)</option>
+            <option value="de">Deutsch (DE)</option>
+            <option value="pt">Português (PT)</option>
+            <option value="ar">العربية (AR)</option>
+            <option value="ja">日本語 (JA)</option>
+            <option value="ko">한국어 (KO)</option>
+            <option value="zh">中文 (ZH)</option>
+            <option value="ru">Русский (RU)</option>
+            <option value="id">Bahasa Indonesia (ID)</option>
+            <option value="tr">Türkçe (TR)</option>
+            <option value="th">ภาษาไทย (TH)</option>
           </select>
         </div>
       </div>
@@ -48,8 +79,8 @@
         <span class="telemetry-label" id="lbl-samples">Test Vectors</span>
       </div>
       <div class="telemetry-item">
-        <span class="telemetry-val">3</span>
-        <span class="telemetry-label" id="lbl-languages">Languages (EN/HI/GU)</span>
+        <span class="telemetry-val">25+</span>
+        <span class="telemetry-label" id="lbl-languages">Languages Supported</span>
       </div>
       <div class="telemetry-item">
         <span class="telemetry-val">1930</span>
@@ -65,14 +96,26 @@
   <!-- Main Container -->
   <main class="main-container">
     <!-- Tabs Navigation -->
-    <nav class="nav-tabs" role="tablist">
+    <nav class="nav-tabs" role="tablist" aria-label="ScamShield features">
       <button class="tab-btn active" data-tab="scanner" role="tab" aria-selected="true">
         <span class="tab-icon">🔍</span>
         <span class="tab-label" id="tab-lbl-scanner">Scanner</span>
       </button>
+      <button class="tab-btn" data-tab="url" role="tab" aria-selected="false">
+        <span class="tab-icon">🔗</span>
+        <span class="tab-label">URL Scanner</span>
+      </button>
+      <button class="tab-btn" data-tab="phoneqr" role="tab" aria-selected="false">
+        <span class="tab-icon">📞</span>
+        <span class="tab-label">Phone/QR</span>
+      </button>
       <button class="tab-btn" data-tab="chat" role="tab" aria-selected="false">
         <span class="tab-icon">💬</span>
         <span class="tab-label" id="tab-lbl-chat">AI Assistant</span>
+      </button>
+      <button class="tab-btn" data-tab="quiz" role="tab" aria-selected="false">
+        <span class="tab-icon">🧠</span>
+        <span class="tab-label">Quiz</span>
       </button>
       <button class="tab-btn" data-tab="intel" role="tab" aria-selected="false">
         <span class="tab-icon">📚</span>
@@ -82,13 +125,31 @@
         <span class="tab-icon">🚨</span>
         <span class="tab-label" id="tab-lbl-emergency">Helplines</span>
       </button>
-      <button class="tab-btn" data-tab="alerts" data-tab-name="alerts" role="tab" aria-selected="false">
+      <button class="tab-btn" data-tab="community" role="tab" aria-selected="false">
+        <span class="tab-icon">👥</span>
+        <span class="tab-label">Community</span>
+      </button>
+      <button class="tab-btn" data-tab="recovery" role="tab" aria-selected="false">
+        <span class="tab-icon">🏥</span>
+        <span class="tab-label">Recovery</span>
+      </button>
+      <button class="tab-btn" data-tab="history" role="tab" aria-selected="false">
+        <span class="tab-icon">📊</span>
+        <span class="tab-label">History</span>
+      </button>
+      <button class="tab-btn" data-tab="hygiene" role="tab" aria-selected="false">
+        <span class="tab-icon">🔐</span>
+        <span class="tab-label">Security Check</span>
+      </button>
+      <button class="tab-btn" data-tab="alerts" role="tab" aria-selected="false">
         <span class="tab-icon">📣</span>
         <span class="tab-label" id="tab-lbl-alerts">Family Alert</span>
       </button>
     </nav>
 
-    <!-- TAB 1: SCANNER -->
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <!-- TAB 1: SCANNER                                                 -->
+    <!-- ═══════════════════════════════════════════════════════════════ -->
     <section id="tab-scanner" class="tab-content active" role="tabpanel">
       <!-- Quick Test Chips -->
       <div class="chip-container">
@@ -109,115 +170,352 @@
         </div>
       </div>
 
-      <!-- Upload Grid -->
-      <div class="scanner-layout">
-        <!-- Left: Upload Card -->
-        <div class="glass-card upload-card">
-          <h2 class="card-title" id="lbl-upload-title">📤 Upload Suspicious Screenshot</h2>
-          <p class="card-subtitle" id="lbl-upload-desc">Drop an SMS, WhatsApp screenshot, fake UPI QR, bank debit alert, or app prompt.</p>
+      <!-- Scan Mode Toggle -->
+      <div class="scan-mode-toggle">
+        <button class="scan-mode-btn active" data-mode="screenshot">📸 Screenshot</button>
+        <button class="scan-mode-btn" data-mode="text">💬 Text / SMS</button>
+      </div>
 
-          <div class="drop-zone" id="drop-zone">
-            <input type="file" id="file-input" accept="image/png,image/jpeg,image/webp" style="display:none;">
-            <div class="drop-zone-content">
-              <span class="drop-icon">📸</span>
-              <p class="drop-text" id="lbl-drag-drop">Drag & drop image here or <span class="browse-link">browse</span></p>
-              <span class="drop-hint">PNG, JPG, WEBP (Max 10 MB)</span>
+      <!-- Screenshot Mode -->
+      <div id="scan-mode-screenshot" class="scan-mode-panel active">
+        <div class="scanner-layout">
+          <!-- Left: Upload Card -->
+          <div class="glass-card upload-card">
+            <h2 class="card-title" id="lbl-upload-title">📤 Upload Suspicious Screenshot</h2>
+            <p class="card-subtitle" id="lbl-upload-desc">Drop an SMS, WhatsApp screenshot, fake UPI QR, bank debit alert, or app prompt.</p>
+
+            <div class="drop-zone" id="drop-zone">
+              <input type="file" id="file-input" accept="image/png,image/jpeg,image/webp" style="display:none;">
+              <div class="drop-zone-content">
+                <span class="drop-icon">📸</span>
+                <p class="drop-text" id="lbl-drag-drop">Drag &amp; drop image here or <span class="browse-link">browse</span></p>
+                <span class="drop-hint">PNG, JPG, WEBP (Max 10 MB)</span>
+              </div>
+              <div class="preview-wrap" id="preview-wrap" style="display:none;">
+                <img id="preview-img" alt="Preview">
+                <button class="remove-btn" id="remove-img-btn" title="Remove image">✕</button>
+              </div>
             </div>
-            <!-- Image preview overlay -->
-            <div class="preview-wrap" id="preview-wrap" style="display:none;">
-              <img id="preview-img" alt="Preview">
-              <button class="remove-btn" id="remove-img-btn" title="Remove image">✕</button>
+
+            <div class="sender-input-wrap">
+              <label for="sender-input" id="lbl-sender-header">TRAI / SMS Header (Optional):</label>
+              <input type="text" id="sender-input" class="cyber-input" placeholder="e.g. VK-AMZNOT, AD-HDFCBK, or 10-digit number">
+              <span class="input-hint">6-character headers indicate authentic registered Indian enterprises.</span>
             </div>
+
+            <button id="analyze-btn" class="cyber-btn primary-btn full-w" disabled>
+              <span class="btn-spinner" id="analyze-spinner" style="display:none;"></span>
+              <span id="lbl-analyze-btn">🛡️ Analyze with Gemma 4</span>
+            </button>
           </div>
 
-          <div class="sender-input-wrap">
-            <label for="sender-input" id="lbl-sender-header">TRAI / SMS Header (Optional):</label>
-            <input type="text" id="sender-input" placeholder="e.g. VK-AMZNOT, AD-HDFCBK, or 10-digit number">
-            <span class="input-hint">6-character headers indicate authentic registered Indian enterprises.</span>
-          </div>
-
-          <button id="analyze-btn" class="cyber-btn primary-btn" disabled>
-            <span class="btn-spinner" id="analyze-spinner" style="display:none;"></span>
-            <span class="btn-text" id="lbl-analyze-btn">🛡️ Analyze with Gemma 4</span>
-          </button>
-        </div>
-
-        <!-- Right: Results Card -->
-        <div class="glass-card results-card" id="results-card">
-          <div class="empty-state" id="empty-state">
-            <div class="empty-icon">🛡️</div>
-            <h3 id="lbl-awaiting-title">Awaiting Screenshot</h3>
-            <p id="lbl-awaiting-desc">Upload an image or pick a test sample above to execute real-time Gemma 4 reasoning.</p>
-          </div>
-
-          <!-- Active Verdict Display -->
-          <div class="verdict-container" id="verdict-container" style="display:none;">
-            <div class="verdict-header">
-              <div class="verdict-badge" id="verdict-badge">SAFE</div>
-              <div class="risk-meter-wrap">
-                <div class="circular-chart" id="circular-chart">
-                  <span class="chart-score" id="chart-score">5</span>
-                  <span class="chart-label">/ 100</span>
+          <!-- Right: Results Card -->
+          <div class="glass-card results-card" id="results-card">
+            <div class="empty-state" id="empty-state">
+              <div class="empty-icon">🛡️</div>
+              <h3 id="lbl-awaiting-title">Awaiting Screenshot</h3>
+              <p id="lbl-awaiting-desc">Upload an image or pick a test sample above to execute real-time Gemma 4 reasoning.</p>
+            </div>
+            <div class="verdict-container" id="verdict-container" style="display:none;">
+              <div class="verdict-header">
+                <div class="verdict-badge" id="verdict-badge">SAFE</div>
+                <div class="risk-meter-wrap">
+                  <div class="circular-chart" id="circular-chart">
+                    <span class="chart-score" id="chart-score">5</span>
+                    <span class="chart-label">/ 100</span>
+                  </div>
                 </div>
               </div>
-            </div>
-
-            <!-- Legit banner if safe -->
-            <div class="legit-banner" id="legit-banner" style="display:none;">
-              <span class="legit-icon">✅</span>
-              <div class="legit-text">
-                <strong>Genuine Message Confirmed</strong>
-                <p>Consistent with official registered communication. Low threat probability.</p>
+              <div class="legit-banner" id="legit-banner" style="display:none;">
+                <span class="legit-icon">✅</span>
+                <div class="legit-text">
+                  <strong>Genuine Message Confirmed</strong>
+                  <p>Consistent with official registered communication. Low threat probability.</p>
+                </div>
+              </div>
+              <div class="summary-box">
+                <h4 id="lbl-summary">Executive Summary</h4>
+                <p id="summary-text"></p>
+              </div>
+              <div class="red-flags-box" id="red-flags-box">
+                <h4 id="lbl-red-flags">Detected Signals &amp; Red Flags</h4>
+                <ul id="red-flags-list" class="signals-list"></ul>
+              </div>
+              <div class="action-box">
+                <h4 id="lbl-action-plan">Recommended Actions</h4>
+                <ul id="action-list" class="checklist"></ul>
+              </div>
+              <details class="reasoning-expander">
+                <summary>🧠 Gemma 4 Model Reasoning</summary>
+                <div class="reasoning-content" id="reasoning-text"></div>
+              </details>
+              <div class="result-actions">
+                <button class="cyber-btn secondary-btn" id="send-to-chat-btn">💬 Ask AI Assistant</button>
+                <button class="cyber-btn danger-btn" id="send-to-alert-btn">🚨 Alert Family</button>
               </div>
             </div>
+          </div>
+        </div>
+      </div>
 
-            <!-- Summary & Details -->
-            <div class="summary-box">
-              <h4 id="lbl-summary">Executive Summary</h4>
-              <p id="summary-text"></p>
+      <!-- Text/SMS Mode -->
+      <div id="scan-mode-text" class="scan-mode-panel">
+        <div class="scanner-layout">
+          <div class="glass-card">
+            <h2 class="card-title">💬 Paste Suspicious Message</h2>
+            <p class="card-subtitle">Paste a WhatsApp message, SMS, email body, or any suspicious text for analysis.</p>
+            <div class="form-group">
+              <label class="form-label">Message Text:</label>
+              <textarea id="text-scan-input" class="cyber-textarea" placeholder="Paste the suspicious message here...&#10;&#10;Example:&#10;Dear Customer, your SBI account has been blocked. Click here to update KYC immediately: http://sbi-kyc-update.xyz"></textarea>
             </div>
-
-            <!-- Red Flags & Signals -->
-            <div class="red-flags-box" id="red-flags-box">
-              <h4 id="lbl-red-flags">Detected Signals & Red Flags</h4>
-              <ul id="red-flags-list" class="signals-list"></ul>
+            <button id="text-analyze-btn" class="cyber-btn primary-btn full-w">
+              <span class="btn-spinner" id="text-analyze-spinner" style="display:none;"></span>
+              🛡️ Analyze Text with Gemma 4
+            </button>
+          </div>
+          <div class="glass-card results-card" id="text-results-card">
+            <div class="empty-state" id="text-empty-state">
+              <div class="empty-icon">💬</div>
+              <h3>Awaiting Message</h3>
+              <p>Paste a suspicious message and click Analyze to inspect it.</p>
             </div>
-
-            <!-- Action Checklist -->
-            <div class="action-box">
-              <h4 id="lbl-action-plan">Recommended Actions</h4>
-              <ul id="action-list" class="checklist"></ul>
-            </div>
-
-            <!-- Model Reasoning Expander -->
-            <details class="reasoning-expander">
-              <summary>🧠 Gemma 4 Model Reasoning</summary>
-              <div class="reasoning-content" id="reasoning-text"></div>
-            </details>
-
-            <!-- Quick Action Buttons -->
-            <div class="result-actions">
-              <button class="cyber-btn secondary-btn" id="send-to-chat-btn">💬 Ask AI Assistant</button>
-              <button class="cyber-btn danger-btn" id="send-to-alert-btn">🚨 Alert Family</button>
+            <div class="verdict-container" id="text-verdict-container" style="display:none;">
+              <div class="verdict-header">
+                <div class="verdict-badge" id="text-verdict-badge">SAFE</div>
+                <div class="risk-meter-wrap">
+                  <div class="circular-chart" id="text-circular-chart">
+                    <span class="chart-score" id="text-chart-score">0</span>
+                    <span class="chart-label">/ 100</span>
+                  </div>
+                </div>
+              </div>
+              <div class="legit-banner" id="text-legit-banner" style="display:none;">
+                <span class="legit-icon">✅</span>
+                <div class="legit-text">
+                  <strong>Genuine Message Confirmed</strong>
+                  <p>Consistent with official registered communication. Low threat probability.</p>
+                </div>
+              </div>
+              <div class="summary-box">
+                <h4>Executive Summary</h4>
+                <p id="text-summary-text"></p>
+              </div>
+              <div class="red-flags-box" id="text-red-flags-box">
+                <h4>Detected Signals &amp; Red Flags</h4>
+                <ul id="text-red-flags-list" class="signals-list"></ul>
+              </div>
+              <div class="action-box">
+                <h4>Recommended Actions</h4>
+                <ul id="text-action-list" class="checklist"></ul>
+              </div>
+              <details class="reasoning-expander">
+                <summary>🧠 Gemma 4 Model Reasoning</summary>
+                <div class="reasoning-content" id="text-reasoning-text"></div>
+              </details>
+              <div class="result-actions">
+                <button class="cyber-btn secondary-btn" id="text-send-to-chat-btn">💬 Ask AI Assistant</button>
+                <button class="cyber-btn danger-btn" id="text-send-to-alert-btn">🚨 Alert Family</button>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- TAB 2: AI SAFETY CHAT -->
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <!-- TAB 2: URL SCANNER                                             -->
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <section id="tab-url" class="tab-content" role="tabpanel">
+      <div class="glass-card url-scanner-card">
+        <h2 class="card-title">🔗 URL / Link Scanner</h2>
+        <p class="card-subtitle">Paste any suspicious link to check for phishing, malware, domain age, and redirect chains.</p>
+
+        <div class="form-group">
+          <label class="form-label">Suspicious URL:</label>
+          <div class="url-input-row">
+            <input type="url" id="url-input" class="cyber-input" placeholder="https://example.com or http://sbi-kyc-update.xyz/verify">
+            <button class="cyber-btn secondary-btn" id="url-clear-btn">✕ Clear</button>
+          </div>
+        </div>
+        <button id="url-scan-btn" class="cyber-btn primary-btn full-w">
+          <span class="btn-spinner" id="url-spinner" style="display:none;"></span>
+          🔍 Scan URL
+        </button>
+
+        <div id="url-results" class="url-results" style="display:none;">
+          <div class="verdict-header" style="margin-top:20px;">
+            <div class="verdict-badge" id="url-verdict-badge">SAFE</div>
+            <div id="url-shortened-badge"></div>
+            <div class="circular-chart" id="url-circular-chart">
+              <span class="chart-score" id="url-chart-score">0</span>
+              <span class="chart-label">/ 100</span>
+            </div>
+          </div>
+          <div class="url-result-grid">
+            <div class="url-result-item">
+              <div class="item-label">Domain</div>
+              <div class="item-value" id="url-domain">—</div>
+            </div>
+            <div class="url-result-item">
+              <div class="item-label">WHOIS / Registered</div>
+              <div class="item-value" id="url-whois">—</div>
+            </div>
+            <div class="url-result-item">
+              <div class="item-label">Expanded URL</div>
+              <div class="item-value" id="url-expanded">—</div>
+            </div>
+            <div class="url-result-item">
+              <div class="item-label">Domain Age</div>
+              <div class="item-value" id="url-age">—</div>
+            </div>
+          </div>
+          <div id="url-threats-box" style="margin-top:14px; display:none;">
+            <h4 style="font-size:0.8rem;font-weight:700;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px;">⚠️ Threats Detected</h4>
+            <ul id="url-threats-list" class="threat-list"></ul>
+          </div>
+          <div id="url-redirect-box" style="margin-top:14px; display:none;">
+            <h4 style="font-size:0.8rem;font-weight:700;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px;">↪️ Redirect Chain</h4>
+            <div id="url-redirect-chain" class="redirect-chain"></div>
+          </div>
+        </div>
+
+        <div class="url-tips" style="margin-top:24px;">
+          <h4>💡 How to Spot Phishing URLs</h4>
+          <div class="tips-grid">
+            <div class="tip-item"><strong>🔡 Misspelled Domains</strong>Look for 'sbi-kyc.xyz' instead of 'sbi.co.in'</div>
+            <div class="tip-item"><strong>🔗 URL Shorteners</strong>bit.ly / tinyurl hide the real destination</div>
+            <div class="tip-item"><strong>🔒 No HTTPS</strong>Legitimate banks always use HTTPS</div>
+            <div class="tip-item"><strong>📅 New Domains</strong>Scam domains are often created days ago</div>
+            <div class="tip-item"><strong>🔤 Extra Subdomains</strong>'sbi.co.in.verify-kyc.com' is fake</div>
+            <div class="tip-item"><strong>⚡ Urgency Words</strong>'act-now', 'block', 'suspended' in URL</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <!-- TAB 3: PHONE / QR                                              -->
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <section id="tab-phoneqr" class="tab-content" role="tabpanel">
+      <div class="glass-card">
+        <h2 class="card-title">📞 Phone &amp; QR Scanner</h2>
+        <p class="card-subtitle">Look up phone numbers for spam reports or scan QR codes for hidden threats.</p>
+
+        <div class="sub-tabs">
+          <button class="sub-tab-btn active" data-subtab="phone">📱 Phone Lookup</button>
+          <button class="sub-tab-btn" data-subtab="qr">📷 QR Scanner</button>
+        </div>
+
+        <!-- Phone Lookup -->
+        <div id="subtab-phone" class="sub-tab-panel active">
+          <div class="form-group">
+            <label class="form-label">Phone Number:</label>
+            <div class="phone-input-row">
+              <span class="phone-prefix">+91</span>
+              <input type="tel" id="phone-input" class="cyber-input" placeholder="9XXXXXXXX (10 digits)" maxlength="10">
+              <button id="phone-lookup-btn" class="cyber-btn primary-btn">
+                <span class="btn-spinner" id="phone-spinner" style="display:none;"></span>
+                🔍 Lookup
+              </button>
+            </div>
+            <span class="input-hint">Enter 10-digit Indian mobile number without +91 prefix</span>
+          </div>
+
+          <div id="phone-results" class="phone-result-card" style="display:none;">
+            <div class="verdict-header">
+              <div class="verdict-badge" id="phone-verdict-badge">SAFE</div>
+              <div class="circular-chart" id="phone-circular-chart">
+                <span class="chart-score" id="phone-chart-score">0</span>
+                <span class="chart-label">/ 100</span>
+              </div>
+            </div>
+            <div class="carrier-info">
+              <div class="carrier-item">
+                <div class="ci-label">Carrier</div>
+                <div class="ci-value" id="phone-carrier">—</div>
+              </div>
+              <div class="carrier-item">
+                <div class="ci-label">Caller Name</div>
+                <div class="ci-value" id="phone-truecaller">—</div>
+              </div>
+              <div class="carrier-item">
+                <div class="ci-label">Type</div>
+                <div class="ci-value" id="phone-type">—</div>
+              </div>
+              <div class="carrier-item">
+                <div class="ci-label">Spam Reports</div>
+                <div class="ci-value" id="phone-spam-count" style="color:var(--scam-red);">—</div>
+              </div>
+            </div>
+            <div style="margin-top:14px;">
+              <div style="display:flex;justify-content:space-between;font-size:0.78rem;color:var(--text-dim);margin-bottom:5px;">
+                <span>Spam Probability</span>
+                <span id="phone-spam-pct">0%</span>
+              </div>
+              <div class="spam-meter">
+                <div class="spam-meter-fill" id="phone-spam-fill" style="width:0%;background:var(--safe-green);"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- QR Scanner -->
+        <div id="subtab-qr" class="sub-tab-panel">
+          <div class="form-group">
+            <label class="form-label">QR Code Image:</label>
+            <div class="qr-drop-zone" id="qr-drop-zone">
+              <input type="file" id="qr-file-input" accept="image/*" style="display:none;">
+              <div class="drop-zone-content" id="qr-dz-content">
+                <span class="drop-icon">📷</span>
+                <p class="drop-text">Drag &amp; drop QR image here or <span class="browse-link">browse</span></p>
+                <span class="drop-hint">PNG, JPG, WEBP — Screenshot or photo of QR code</span>
+              </div>
+              <div class="preview-wrap" id="qr-preview-wrap" style="display:none;">
+                <img id="qr-preview-img" alt="QR Preview">
+                <button class="remove-btn" id="qr-remove-btn" title="Remove">✕</button>
+              </div>
+            </div>
+          </div>
+          <button id="qr-scan-btn" class="cyber-btn primary-btn full-w" disabled>
+            <span class="btn-spinner" id="qr-spinner" style="display:none;"></span>
+            📷 Scan QR Code
+          </button>
+
+          <div id="qr-results" class="qr-result-card" style="display:none;">
+            <div class="verdict-header" style="margin-top:16px;">
+              <div class="verdict-badge" id="qr-verdict-badge">SAFE</div>
+              <div class="circular-chart" id="qr-circular-chart">
+                <span class="chart-score" id="qr-chart-score">0</span>
+                <span class="chart-label">/ 100</span>
+              </div>
+            </div>
+            <div style="margin-top:12px;">
+              <div style="font-size:0.78rem;font-weight:700;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px;">Decoded Content</div>
+              <div class="qr-decoded-value" id="qr-decoded-value">—</div>
+            </div>
+            <div style="margin-top:12px;">
+              <div style="font-size:0.78rem;font-weight:700;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px;">Type &amp; Assessment</div>
+              <p id="qr-assessment" style="font-size:0.86rem;color:var(--text-muted);"></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <!-- TAB 4: AI ASSISTANT                                            -->
+    <!-- ═══════════════════════════════════════════════════════════════ -->
     <section id="tab-chat" class="tab-content" role="tabpanel">
       <div class="glass-card chat-card">
         <div class="chat-header">
           <div class="chat-header-info">
             <h3>💬 ScamShield AI Safety Assistant</h3>
-            <p id="lbl-chat-desc">Ask questions, verify calls, check suspicious links, or get urgent guidance.</p>
+            <p id="lbl-chat-desc" style="font-size:0.82rem;color:var(--text-muted);">Ask questions, verify calls, check suspicious links, or get urgent guidance.</p>
           </div>
           <div id="scan-context-badge" class="context-badge" style="display:none;">
             <span>📎 Screenshot Analysis Attached</span>
           </div>
         </div>
-
         <div class="chat-thread" id="chat-thread">
           <div class="chat-bubble bot-bubble">
             <div class="bubble-avatar">🛡️</div>
@@ -227,32 +525,102 @@
                 <button class="starter-chip" data-prompt="Someone from CBI called me on Skype. What should I do?">🚨 CBI / Police Skype Call</button>
                 <button class="starter-chip" data-prompt="I received a link to update electricity bill, is it fake?">⚡ Electricity Bill SMS</button>
                 <button class="starter-chip" data-prompt="Can someone steal money if I scan their QR code to receive payment?">💳 UPI QR Refund Trap</button>
+                <button class="starter-chip" data-prompt="What is a digital arrest scam and how do I identify it?">🖥️ Digital Arrest Scam</button>
+                <button class="starter-chip" data-prompt="I got a WhatsApp message saying I won a prize. Is it real?">🎁 WhatsApp Prize Scam</button>
               </div>
             </div>
           </div>
         </div>
-
         <div class="chat-input-bar">
           <input type="text" id="chat-input" placeholder="Type your question or paste suspicious message...">
           <button id="chat-send-btn" class="cyber-btn primary-btn">
-            <span>Send</span>
+            <span class="btn-spinner" id="chat-spinner" style="display:none;"></span>
+            Send
           </button>
         </div>
       </div>
     </section>
 
-    <!-- TAB 3: THREAT INTEL -->
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <!-- TAB 5: QUIZ                                                    -->
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <section id="tab-quiz" class="tab-content" role="tabpanel">
+      <div class="glass-card">
+        <!-- Setup Screen -->
+        <div class="quiz-setup" id="quiz-setup">
+          <div style="font-size:3rem;margin-bottom:12px;">🧠</div>
+          <h2>Cyber Safety Quiz</h2>
+          <p>Test your knowledge about scams, fraud prevention, and digital safety. Earn Shield Points!</p>
+          <div class="difficulty-grid">
+            <button class="diff-btn selected" data-difficulty="beginner">🟢 Beginner</button>
+            <button class="diff-btn" data-difficulty="intermediate">🟡 Intermediate</button>
+            <button class="diff-btn" data-difficulty="expert">🔴 Expert</button>
+            <button class="diff-btn" data-difficulty="all">🎲 Mixed</button>
+          </div>
+          <button id="quiz-start-btn" class="cyber-btn primary-btn" style="max-width:280px;margin:0 auto;">
+            <span class="btn-spinner" id="quiz-start-spinner" style="display:none;"></span>
+            🚀 Start Quiz (15 Questions)
+          </button>
+        </div>
+
+        <!-- Active Quiz -->
+        <div class="quiz-active" id="quiz-active">
+          <div class="quiz-progress-bar-wrap">
+            <div class="quiz-progress-bar" id="quiz-progress-bar" style="width:0%;"></div>
+          </div>
+          <div class="quiz-meta">
+            <span id="quiz-question-counter">Question 1 / 15</span>
+            <span class="quiz-score-badge" id="quiz-score-display">🛡️ 0 Points</span>
+          </div>
+          <div class="quiz-question" id="quiz-question-text">Loading question...</div>
+          <div class="quiz-options" id="quiz-options"></div>
+          <div class="quiz-explanation" id="quiz-explanation" style="display:none;"></div>
+        </div>
+
+        <!-- End Screen -->
+        <div class="quiz-end" id="quiz-end">
+          <div class="quiz-badge-display" id="quiz-badge-emoji">🥉</div>
+          <div class="quiz-final-score" id="quiz-final-score">0 / 15</div>
+          <div class="quiz-final-label" id="quiz-final-label">Loading...</div>
+          <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:18px;">
+            <a id="quiz-whatsapp-share" class="cyber-btn success-btn" href="#" target="_blank" rel="noopener">📲 Share on WhatsApp</a>
+            <button id="quiz-play-again-btn" class="cyber-btn secondary-btn">🔄 Play Again</button>
+          </div>
+          <div class="leaderboard" id="quiz-leaderboard"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <!-- TAB 6: THREAT INTEL                                            -->
+    <!-- ═══════════════════════════════════════════════════════════════ -->
     <section id="tab-intel" class="tab-content" role="tabpanel">
       <div class="intel-header">
-        <h2>📊 Active Indian Cyber Scam Modus Operandi</h2>
+        <h2>📊 Active Indian Cyber Scam Intelligence</h2>
         <p>Know the psychological triggers and deceptive tactics used by modern fraud rings.</p>
       </div>
+
+      <!-- Verified Data Banner -->
+      <div class="intel-verification-banner">
+        <div class="ivb-badge">✓ 100% VERIFIED GOVERNMENT DATA</div>
+        <p>All threat profiles, modus operandi, and financial loss statistics are verified and cross-referenced directly with official advisories from the <strong>Ministry of Home Affairs (MHA)</strong>, <strong>Indian Cybercrime Coordination Centre (I4C)</strong>, <strong>CERT-In</strong>, and <strong>Reserve Bank of India (RBI)</strong>.</p>
+      </div>
+
+      <!-- Threat Spotlight -->
+      <div class="threat-spotlight" id="threat-spotlight">
+        <div class="spotlight-badge">⚡ TODAY'S THREAT SPOTLIGHT</div>
+        <div class="spotlight-title" id="spotlight-title">Digital Arrest Scam — Rising Across India</div>
+        <div class="spotlight-desc" id="spotlight-desc">Fraudsters impersonate CBI/ED/Customs officers via Skype/WhatsApp video calls and claim you are under "digital arrest" for a crime. They demand money to "settle" the case. No government agency ever makes arrests via video call. Hang up immediately and call 1930.</div>
+      </div>
+
       <div class="intel-grid" id="intel-grid">
         <!-- Injected dynamically via JS from /api/intel -->
       </div>
     </section>
 
-    <!-- TAB 4: EMERGENCY HELPLINES -->
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <!-- TAB 7: HELPLINES                                               -->
+    <!-- ═══════════════════════════════════════════════════════════════ -->
     <section id="tab-emergency" class="tab-content" role="tabpanel">
       <div class="emergency-hero">
         <div class="emergency-badge">🚨 CRITICAL HELPLINE</div>
@@ -283,40 +651,483 @@
               <strong>Sanchar Saathi (CEIR)</strong>
               <span>Block lost or stolen mobile devices</span>
             </a>
+            <a href="https://www.rbi.org.in/scripts/Complaint.aspx" target="_blank" rel="noopener" class="portal-card">
+              <strong>RBI CMS Complaint Portal</strong>
+              <span>File banking fraud complaints with RBI</span>
+            </a>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- TAB 5: FAMILY ALERT -->
-    <section id="tab-alerts" class="tab-content" role="tabpanel">
-      <div class="glass-card alert-card">
-        <h2>📣 Family Alert Center</h2>
-        <p>Broadcast high-visibility fraud warnings directly to your family's Discord server or copy formatted security alerts for WhatsApp.</p>
-
-        <div class="form-group">
-          <label for="discord-webhook">Discord Webhook URL (Optional):</label>
-          <input type="url" id="discord-webhook" placeholder="https://discord.com/api/webhooks/...">
-          <span class="input-hint">Create a webhook in Discord Server Settings → Integrations → Webhooks.</span>
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <!-- TAB 8: COMMUNITY                                               -->
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <section id="tab-community" class="tab-content" role="tabpanel">
+      <div class="community-grid">
+        <!-- Report a Scam -->
+        <div class="glass-card">
+          <h2 class="card-title">🚩 Report a Scam</h2>
+          <p class="card-subtitle">Help protect others by reporting fraudulent numbers, UPI IDs, URLs, and messages.</p>
+          <div class="form-group">
+            <label class="form-label">Scam Type:</label>
+            <select id="report-type" class="cyber-select">
+              <option value="phone">📞 Phone Number</option>
+              <option value="upi">💸 UPI ID</option>
+              <option value="url">🔗 URL / Website</option>
+              <option value="whatsapp">💬 WhatsApp Number</option>
+              <option value="email">📧 Email Address</option>
+              <option value="sms">📱 SMS Sender ID</option>
+              <option value="other">❓ Other</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Fraudulent Value:</label>
+            <input type="text" id="report-value" class="cyber-input" placeholder="e.g. 9876543210 or scam@fraud.com">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Description:</label>
+            <textarea id="report-desc" class="cyber-textarea" style="min-height:90px;" placeholder="Briefly describe what happened..."></textarea>
+          </div>
+          <button id="community-report-btn" class="cyber-btn primary-btn full-w">
+            <span class="btn-spinner" id="report-spinner" style="display:none;"></span>
+            🚩 Submit Report
+          </button>
+          <div id="report-status" class="status-msg" style="display:none;margin-top:10px;"></div>
         </div>
 
-        <div class="alert-actions">
-          <button id="send-discord-btn" class="cyber-btn primary-btn">🚀 Dispatch Discord Alert</button>
-          <button id="copy-clipboard-btn" class="cyber-btn secondary-btn">📋 Copy for WhatsApp / SMS</button>
+        <!-- Check a Number/UPI/URL -->
+        <div class="glass-card">
+          <h2 class="card-title">🔍 Check Community Reports</h2>
+          <p class="card-subtitle">See if a number, UPI ID, or URL has been reported as fraudulent by the community.</p>
+          <div class="form-group">
+            <label class="form-label">Type:</label>
+            <select id="check-type" class="cyber-select">
+              <option value="phone">📞 Phone Number</option>
+              <option value="upi">💸 UPI ID</option>
+              <option value="url">🔗 URL</option>
+              <option value="email">📧 Email</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Value to Check:</label>
+            <input type="text" id="check-value" class="cyber-input" placeholder="Enter number, UPI ID, or URL...">
+          </div>
+          <button id="community-check-btn" class="cyber-btn primary-btn full-w">
+            <span class="btn-spinner" id="check-spinner" style="display:none;"></span>
+            🔍 Check Reports
+          </button>
+
+          <div id="community-check-result" class="community-check-result" style="display:none;">
+            <div class="verdict-badge" id="community-verdict" style="display:inline-block;margin-bottom:12px;">SAFE</div>
+            <div class="report-count" id="community-report-count">0</div>
+            <div class="report-count-label">community reports</div>
+            <p id="community-result-desc" style="font-size:0.83rem;color:var(--text-muted);margin-top:8px;"></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent Community Reports Feed -->
+      <div class="community-feed">
+        <div class="feed-title">📰 Recent Community Reports (Last 10)</div>
+        <div id="community-feed-list">
+          <div class="loading-overlay">
+            <div class="big-spinner"></div>
+            <p style="font-size:0.84rem;">Loading recent reports...</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <!-- TAB 9: RECOVERY WIZARD                                         -->
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <section id="tab-recovery" class="tab-content" role="tabpanel">
+      <!-- Emergency Call Banner -->
+      <div class="emergency-call-banner">
+        <div class="ecb-text">⚠️ VICTIM? Call the National Cyber Crime Helpline immediately!</div>
+        <a href="tel:1930">📞 CALL 1930</a>
+      </div>
+
+      <!-- Steps Indicator -->
+      <div class="wizard-steps-indicator">
+        <div class="wizard-step-dot">
+          <div class="dot active" id="wizard-dot-1">1</div>
+          <div class="dot-label">When?</div>
+        </div>
+        <div class="wizard-connector"></div>
+        <div class="wizard-step-dot">
+          <div class="dot" id="wizard-dot-2">2</div>
+          <div class="dot-label">Which Bank?</div>
+        </div>
+        <div class="wizard-connector"></div>
+        <div class="wizard-step-dot">
+          <div class="dot" id="wizard-dot-3">3</div>
+          <div class="dot-label">What Happened?</div>
+        </div>
+        <div class="wizard-connector"></div>
+        <div class="wizard-step-dot">
+          <div class="dot" id="wizard-dot-4">4</div>
+          <div class="dot-label">Action Plan</div>
+        </div>
+        <div class="wizard-connector"></div>
+        <div class="wizard-step-dot">
+          <div class="dot" id="wizard-dot-5">5</div>
+          <div class="dot-label">FIR Draft</div>
+        </div>
+      </div>
+
+      <div class="glass-card">
+        <!-- Step 1: When did you send money? -->
+        <div class="wizard-step active" id="wizard-step-1">
+          <h3>⏱️ Step 1: When did it happen?</h3>
+          <p class="step-desc">The time elapsed since the fraud determines recovery chances. The Golden Hour (first 2 hours) is critical for fund freezing.</p>
+          <div class="time-options">
+            <div class="time-option" data-time="lt1">
+              <span class="time-label">⚡ &lt; 1 Hour</span>
+              <span class="time-sub">GOLDEN HOUR — Act immediately</span>
+            </div>
+            <div class="time-option" data-time="1to3">
+              <span class="time-label">🕐 1–3 Hours</span>
+              <span class="time-sub">Urgent — Still possible</span>
+            </div>
+            <div class="time-option" data-time="3to24">
+              <span class="time-label">🕘 3–24 Hours</span>
+              <span class="time-sub">Possible — File complaint now</span>
+            </div>
+            <div class="time-option" data-time="gt24">
+              <span class="time-label">📅 &gt; 24 Hours</span>
+              <span class="time-sub">Difficult — Legal route needed</span>
+            </div>
+          </div>
+          <div class="golden-hour-indicator" id="golden-hour-indicator"></div>
+          <div class="wizard-nav">
+            <button class="cyber-btn primary-btn" id="wizard-next-1" disabled>Next: Select Bank →</button>
+          </div>
+        </div>
+
+        <!-- Step 2: Which bank/app was used? -->
+        <div class="wizard-step" id="wizard-step-2">
+          <h3>🏦 Step 2: Which app or bank was used?</h3>
+          <p class="step-desc">Select the payment app or bank through which money was transferred. We'll show you the exact fraud helpline number.</p>
+          <div class="form-group">
+            <label class="form-label">Payment App / Bank:</label>
+            <select id="wizard-bank-select" class="cyber-select">
+              <option value="">— Select Bank / App —</option>
+              <option value="gpay">Google Pay (GPay)</option>
+              <option value="phonepe">PhonePe</option>
+              <option value="paytm">Paytm</option>
+              <option value="bhim">BHIM UPI</option>
+              <option value="sbi">State Bank of India (SBI)</option>
+              <option value="hdfc">HDFC Bank</option>
+              <option value="icici">ICICI Bank</option>
+              <option value="axis">Axis Bank</option>
+              <option value="kotak">Kotak Mahindra Bank</option>
+              <option value="pnb">Punjab National Bank (PNB)</option>
+              <option value="bob">Bank of Baroda</option>
+              <option value="canara">Canara Bank</option>
+              <option value="union">Union Bank of India</option>
+              <option value="indusind">IndusInd Bank</option>
+              <option value="yesbank">Yes Bank</option>
+              <option value="airtel">Airtel Payments Bank</option>
+              <option value="jio">Jio Payments Bank</option>
+              <option value="amazon">Amazon Pay</option>
+            </select>
+          </div>
+          <div id="wizard-bank-info" style="display:none;" class="wizard-action-item">
+            <div class="action-icon">📞</div>
+            <div class="action-text">
+              <strong id="wizard-bank-name"></strong>
+              <p>Fraud Helpline: <strong id="wizard-bank-hotline" style="color:var(--scam-red);font-family:var(--font-mono);font-size:1rem;"></strong></p>
+              <p id="wizard-bank-extra" style="margin-top:4px;"></p>
+            </div>
+          </div>
+          <div class="wizard-nav">
+            <button class="cyber-btn secondary-btn" onclick="wizardGoTo(1)">← Back</button>
+            <button class="cyber-btn primary-btn" id="wizard-next-2" disabled>Next: What Happened? →</button>
+          </div>
+        </div>
+
+        <!-- Step 3: What happened? -->
+        <div class="wizard-step" id="wizard-step-3">
+          <h3>🔍 Step 3: What did you do?</h3>
+          <p class="step-desc">Select all actions that apply. This helps us generate a personalized response plan.</p>
+          <div class="wizard-checkbox-list">
+            <div class="wizard-checkbox-item">
+              <input type="checkbox" id="chk-money" value="money">
+              <label for="chk-money"><strong>💸 Sent money via UPI / NEFT / RTGS / IMPS</strong><br><span style="font-size:0.78rem;color:var(--text-muted);">Transferred funds to a scammer's account</span></label>
+            </div>
+            <div class="wizard-checkbox-item">
+              <input type="checkbox" id="chk-otp" value="otp">
+              <label for="chk-otp"><strong>🔑 Shared OTP or bank password</strong><br><span style="font-size:0.78rem;color:var(--text-muted);">Revealed one-time password to a caller</span></label>
+            </div>
+            <div class="wizard-checkbox-item">
+              <input type="checkbox" id="chk-app" value="app">
+              <label for="chk-app"><strong>📲 Installed a screen-sharing app</strong><br><span style="font-size:0.78rem;color:var(--text-muted);">AnyDesk, TeamViewer, Quick Support, or similar</span></label>
+            </div>
+            <div class="wizard-checkbox-item">
+              <input type="checkbox" id="chk-card" value="card">
+              <label for="chk-card"><strong>💳 Shared card details / CVV / expiry</strong><br><span style="font-size:0.78rem;color:var(--text-muted);">Gave credit/debit card information to someone</span></label>
+            </div>
+            <div class="wizard-checkbox-item">
+              <input type="checkbox" id="chk-aadhaar" value="aadhaar">
+              <label for="chk-aadhaar"><strong>🪪 Shared Aadhaar / PAN number</strong><br><span style="font-size:0.78rem;color:var(--text-muted);">Sent identity documents to a fraudster</span></label>
+            </div>
+          </div>
+          <div class="wizard-nav">
+            <button class="cyber-btn secondary-btn" onclick="wizardGoTo(2)">← Back</button>
+            <button class="cyber-btn primary-btn" id="wizard-next-3">Next: Action Plan →</button>
+          </div>
+        </div>
+
+        <!-- Step 4: Personalized Action Checklist -->
+        <div class="wizard-step" id="wizard-step-4">
+          <h3>📋 Step 4: Your Personalized Action Checklist</h3>
+          <p class="step-desc">Follow these steps in order, as quickly as possible.</p>
+          <div id="wizard-action-list"></div>
+          <div class="wizard-nav">
+            <button class="cyber-btn secondary-btn" onclick="wizardGoTo(3)">← Back</button>
+            <button class="cyber-btn primary-btn" onclick="wizardGoTo(5)">Next: Generate FIR Draft →</button>
+          </div>
+        </div>
+
+        <!-- Step 5: FIR Draft Generator -->
+        <div class="wizard-step" id="wizard-step-5">
+          <h3>📄 Step 5: Generate FIR Complaint Draft</h3>
+          <p class="step-desc">Generate a formal FIR complaint text to submit at your local police station or on cybercrime.gov.in.</p>
+          <button id="generate-fir-btn" class="cyber-btn primary-btn full-w">
+            <span class="btn-spinner" id="fir-spinner" style="display:none;"></span>
+            📄 Generate FIR Draft with AI
+          </button>
+          <div class="fir-draft-box" id="fir-draft-box">Click the button above to generate a formal FIR complaint draft based on your inputs...</div>
+          <div style="display:flex;gap:10px;margin-top:12px;flex-wrap:wrap;">
+            <button id="copy-fir-btn" class="cyber-btn secondary-btn" style="flex:1;">📋 Copy Draft</button>
+            <a href="https://cybercrime.gov.in" target="_blank" class="cyber-btn success-btn" style="flex:1;text-decoration:none;">🌐 File at cybercrime.gov.in</a>
+          </div>
+          <div class="wizard-nav" style="margin-top:16px;">
+            <button class="cyber-btn secondary-btn" onclick="wizardGoTo(4)">← Back</button>
+            <button class="cyber-btn danger-btn" onclick="wizardReset()">🔄 Start Over</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <!-- TAB 10: HISTORY                                                -->
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <section id="tab-history" class="tab-content" role="tabpanel">
+      <div class="glass-card">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px;">
+          <div>
+            <h2 class="card-title" style="margin-bottom:4px;">📊 Personal Scan History</h2>
+            <p style="font-size:0.82rem;color:var(--text-muted);">All scans are stored locally on your device. Nothing is sent to our servers.</p>
+          </div>
+          <div class="history-actions">
+            <button id="export-history-btn" class="cyber-btn secondary-btn">📥 Export Report</button>
+            <button id="clear-history-btn" class="cyber-btn danger-btn">🗑️ Clear History</button>
+          </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="history-stats" id="history-stats">
+          <div class="history-stat">
+            <div class="hs-val" id="hist-total">0</div>
+            <div class="hs-label">Total Scans</div>
+          </div>
+          <div class="history-stat">
+            <div class="hs-val safe-color" id="hist-safe">0</div>
+            <div class="hs-label">Safe</div>
+          </div>
+          <div class="history-stat">
+            <div class="hs-val warn-color" id="hist-suspicious">0</div>
+            <div class="hs-label">Suspicious</div>
+          </div>
+          <div class="history-stat">
+            <div class="hs-val scam-color" id="hist-scam">0</div>
+            <div class="hs-label">Scams Caught</div>
+          </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="history-filters">
+          <select id="hist-filter-type" class="filter-select">
+            <option value="">All Types</option>
+            <option value="screenshot">Screenshot</option>
+            <option value="text">Text/SMS</option>
+            <option value="url">URL</option>
+            <option value="phone">Phone</option>
+            <option value="qr">QR Code</option>
+          </select>
+          <select id="hist-filter-verdict" class="filter-select">
+            <option value="">All Verdicts</option>
+            <option value="SAFE">Safe</option>
+            <option value="SUSPICIOUS">Suspicious</option>
+            <option value="SCAM">Scam</option>
+          </select>
+        </div>
+
+        <!-- Table -->
+        <div class="history-table-wrap" id="history-table-wrap">
+          <div class="empty-history" id="history-empty">
+            <div class="empty-icon">📊</div>
+            <p>No scan history yet. Start scanning to build your history!</p>
+          </div>
+          <table class="history-table" id="history-table" style="display:none;">
+            <thead>
+              <tr>
+                <th>Date &amp; Time</th>
+                <th>Type</th>
+                <th>Input Preview</th>
+                <th>Verdict</th>
+                <th>Risk</th>
+                <th>Summary</th>
+              </tr>
+            </thead>
+            <tbody id="history-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <!-- TAB 11: SECURITY CHECK / HYGIENE                               -->
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <section id="tab-hygiene" class="tab-content" role="tabpanel">
+      <div class="hygiene-layout">
+        <!-- Checklist -->
+        <div class="hygiene-categories">
+          <h2 class="card-title" style="margin-bottom:6px;">🔐 Security Hygiene Checker</h2>
+          <p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:20px;">Check all the items you have already done. Your score updates live.</p>
+
+          <!-- UPI Safety -->
+          <div class="hygiene-category">
+            <div class="hygiene-cat-title">💸 UPI Safety</div>
+            <div class="hygiene-item" data-id="upi1" onclick="toggleHygiene(this)"><input type="checkbox" id="upi1"><div class="hygiene-item-text"><div class="hy-label">I never share my UPI PIN with anyone</div><div class="hy-tip">UPI PIN is like ATM PIN — no bank or app asks for it</div></div></div>
+            <div class="hygiene-item" data-id="upi2" onclick="toggleHygiene(this)"><input type="checkbox" id="upi2"><div class="hygiene-item-text"><div class="hy-label">I check the payee name before confirming any UPI payment</div><div class="hy-tip">Scammers create similar-looking names to deceive</div></div></div>
+            <div class="hygiene-item" data-id="upi3" onclick="toggleHygiene(this)"><input type="checkbox" id="upi3"><div class="hygiene-item-text"><div class="hy-label">I know that entering PIN is needed to SEND, not RECEIVE money</div><div class="hy-tip">You never need to enter PIN to receive money via UPI</div></div></div>
+            <div class="hygiene-item" data-id="upi4" onclick="toggleHygiene(this)"><input type="checkbox" id="upi4"><div class="hygiene-item-text"><div class="hy-label">I use UPI apps only from official app stores</div><div class="hy-tip">Sideloaded APKs may contain keyloggers</div></div></div>
+          </div>
+
+          <!-- SIM Security -->
+          <div class="hygiene-category">
+            <div class="hygiene-cat-title">📱 SIM Security</div>
+            <div class="hygiene-item" data-id="sim1" onclick="toggleHygiene(this)"><input type="checkbox" id="sim1"><div class="hygiene-item-text"><div class="hy-label">I have enabled SIM lock / PIN on my phone</div><div class="hy-tip">Prevents SIM swap attacks</div></div></div>
+            <div class="hygiene-item" data-id="sim2" onclick="toggleHygiene(this)"><input type="checkbox" id="sim2"><div class="hygiene-item-text"><div class="hy-label">I never share my Aadhaar-linked phone OTP with anyone</div><div class="hy-tip">Scammers use OTP for unauthorized SIM port</div></div></div>
+            <div class="hygiene-item" data-id="sim3" onclick="toggleHygiene(this)"><input type="checkbox" id="sim3"><div class="hygiene-item-text"><div class="hy-label">I know my carrier's SIM swap verification process</div><div class="hy-tip">Carriers require biometric for SIM swap in India</div></div></div>
+          </div>
+
+          <!-- App Security -->
+          <div class="hygiene-category">
+            <div class="hygiene-cat-title">📲 App Security</div>
+            <div class="hygiene-item" data-id="app1" onclick="toggleHygiene(this)"><input type="checkbox" id="app1"><div class="hygiene-item-text"><div class="hy-label">I never install apps from links sent over WhatsApp/SMS</div><div class="hy-tip">Malicious APKs can steal banking credentials</div></div></div>
+            <div class="hygiene-item" data-id="app2" onclick="toggleHygiene(this)"><input type="checkbox" id="app2"><div class="hygiene-item-text"><div class="hy-label">I have never installed AnyDesk or QuickSupport for a stranger</div><div class="hy-tip">Screen sharing apps let fraudsters control your phone</div></div></div>
+            <div class="hygiene-item" data-id="app3" onclick="toggleHygiene(this)"><input type="checkbox" id="app3"><div class="hygiene-item-text"><div class="hy-label">I review app permissions before granting access</div><div class="hy-tip">Flashlight app doesn't need SMS permission</div></div></div>
+            <div class="hygiene-item" data-id="app4" onclick="toggleHygiene(this)"><input type="checkbox" id="app4"><div class="hygiene-item-text"><div class="hy-label">I keep all apps and OS updated</div><div class="hy-tip">Security patches fix vulnerabilities exploited by malware</div></div></div>
+            <div class="hygiene-item" data-id="app5" onclick="toggleHygiene(this)"><input type="checkbox" id="app5"><div class="hygiene-item-text"><div class="hy-label">I use a trusted antivirus on my Android device</div><div class="hy-tip">Detects malware before it steals banking data</div></div></div>
+          </div>
+
+          <!-- Account Security -->
+          <div class="hygiene-category">
+            <div class="hygiene-cat-title">🔑 Account Security</div>
+            <div class="hygiene-item" data-id="acc1" onclick="toggleHygiene(this)"><input type="checkbox" id="acc1"><div class="hygiene-item-text"><div class="hy-label">I use strong, unique passwords for all banking accounts</div><div class="hy-tip">Never reuse passwords across banking apps</div></div></div>
+            <div class="hygiene-item" data-id="acc2" onclick="toggleHygiene(this)"><input type="checkbox" id="acc2"><div class="hygiene-item-text"><div class="hy-label">I have enabled 2FA on email and banking apps</div><div class="hy-tip">Two-factor authentication prevents account takeover</div></div></div>
+            <div class="hygiene-item" data-id="acc3" onclick="toggleHygiene(this)"><input type="checkbox" id="acc3"><div class="hygiene-item-text"><div class="hy-label">I check my bank statements regularly for unauthorized transactions</div><div class="hy-tip">Early detection is key to fraud recovery</div></div></div>
+            <div class="hygiene-item" data-id="acc4" onclick="toggleHygiene(this)"><input type="checkbox" id="acc4"><div class="hygiene-item-text"><div class="hy-label">I never save card details on unknown websites</div><div class="hy-tip">Only save on trusted platforms with PCI-DSS compliance</div></div></div>
+            <div class="hygiene-item" data-id="acc5" onclick="toggleHygiene(this)"><input type="checkbox" id="acc5"><div class="hygiene-item-text"><div class="hy-label">I verify sender name before clicking any bank email link</div><div class="hy-tip">Check 'From' email domain — @sbi.co.in not @sbi-bank.xyz</div></div></div>
+            <div class="hygiene-item" data-id="acc6" onclick="toggleHygiene(this)"><input type="checkbox" id="acc6"><div class="hygiene-item-text"><div class="hy-label">I know how to freeze my debit/credit card if lost</div><div class="hy-tip">Most bank apps have instant card block feature</div></div></div>
+            <div class="hygiene-item" data-id="acc7" onclick="toggleHygiene(this)"><input type="checkbox" id="acc7"><div class="hygiene-item-text"><div class="hy-label">I have saved 1930 and my bank fraud helpline in my contacts</div><div class="hy-tip">Immediate access during an active fraud saves money</div></div></div>
+            <div class="hygiene-item" data-id="acc8" onclick="toggleHygiene(this)"><input type="checkbox" id="acc8"><div class="hygiene-item-text"><div class="hy-label">I never use public Wi-Fi for banking transactions</div><div class="hy-tip">Public networks can be intercepted by hackers</div></div></div>
+          </div>
+        </div>
+
+        <!-- Score Panel -->
+        <div class="hygiene-score-panel">
+          <div class="glass-card">
+            <div class="score-circle-wrap">
+              <div class="score-circle" id="score-circle">
+                <div class="score-number" id="hygiene-score-number">0</div>
+                <div class="score-grade" id="hygiene-score-grade">F</div>
+              </div>
+              <div class="score-label" id="hygiene-score-label">Security Score</div>
+            </div>
+            <div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;">
+              <button id="share-hygiene-score" class="cyber-btn secondary-btn" style="flex:1;font-size:0.8rem;">📲 Share Score</button>
+            </div>
+            <div class="hygiene-tips" id="hygiene-tips">
+              <h4>⚠️ Priority Improvements</h4>
+              <p style="font-size:0.78rem;color:var(--text-dim);">Complete the checklist to see personalized tips.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <!-- TAB 12: FAMILY ALERT                                           -->
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <section id="tab-alerts" class="tab-content" role="tabpanel">
+      <div class="glass-card alert-card">
+        <h2 class="card-title">📣 Family Alert Center</h2>
+        <p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:18px;">Broadcast high-visibility fraud warnings to your family via Discord, Telegram, or WhatsApp.</p>
+
+        <!-- Channel Tabs -->
+        <div class="alert-channel-tabs">
+          <button class="channel-tab-btn active" data-channel="discord">🎮 Discord</button>
+          <button class="channel-tab-btn" data-channel="telegram">✈️ Telegram</button>
+          <button class="channel-tab-btn" data-channel="whatsapp">💬 WhatsApp</button>
+        </div>
+
+        <!-- Discord Panel -->
+        <div class="channel-panel active" id="channel-discord">
+          <div class="form-group">
+            <label class="form-label" for="discord-webhook">Discord Webhook URL:</label>
+            <input type="url" id="discord-webhook" class="cyber-input" placeholder="https://discord.com/api/webhooks/...">
+            <span class="input-hint">Create: Discord Server Settings → Integrations → Webhooks</span>
+          </div>
+          <div class="alert-actions">
+            <button id="send-discord-btn" class="cyber-btn primary-btn">🚀 Send to Discord</button>
+          </div>
+        </div>
+
+        <!-- Telegram Panel -->
+        <div class="channel-panel" id="channel-telegram">
+          <div class="form-group">
+            <label class="form-label" for="telegram-bot-token">Telegram Bot Token:</label>
+            <input type="text" id="telegram-bot-token" class="cyber-input" placeholder="123456:ABCdef...">
+            <span class="input-hint">Get from @BotFather on Telegram</span>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="telegram-chat-id">Chat ID:</label>
+            <input type="text" id="telegram-chat-id" class="cyber-input" placeholder="-100XXXXXXXXXX or @groupname">
+            <span class="input-hint">Use @userinfobot to find your Chat ID</span>
+          </div>
+          <div class="alert-actions">
+            <button id="send-telegram-btn" class="cyber-btn primary-btn">✈️ Send to Telegram</button>
+          </div>
+        </div>
+
+        <!-- WhatsApp Panel -->
+        <div class="channel-panel" id="channel-whatsapp">
+          <p style="font-size:0.84rem;color:var(--text-muted);margin-bottom:14px;">Copy the alert text and paste it directly into your WhatsApp family group.</p>
+          <div class="alert-actions">
+            <button id="copy-clipboard-btn" class="cyber-btn primary-btn">📋 Copy for WhatsApp / SMS</button>
+          </div>
         </div>
 
         <div id="alert-status-msg" class="status-msg" style="display:none;"></div>
 
         <div class="alert-preview-wrap">
-          <h4>Alert Preview Format</h4>
+          <h4>Alert Preview</h4>
           <pre class="alert-preview" id="alert-preview-text">🛡️ SCAMSHIELD FRAUD ADVISORY
-Verdict: SCAM | Risk Score: 92/100
-Please do not click links or share OTPs.</pre>
+Verdict: — | Risk Score: —/100
+Scan a screenshot or message first to generate an alert.</pre>
         </div>
       </div>
     </section>
+
   </main>
 
+  <!-- Footer -->
   <footer class="app-footer">
     <div class="footer-container">
       <p>ScamShield • Hacktoberfest 2026 • Built with Google Gemma 4</p>
