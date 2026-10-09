@@ -69,6 +69,9 @@ def handle_exception(e):
     }), 500
 
 
+import urllib.parse
+
+
 class VercelPathMiddleware:
     """Restores the original request path when Vercel internal rewrites route to /api/index.py."""
     def __init__(self, wsgi_app):
@@ -79,16 +82,20 @@ class VercelPathMiddleware:
         subpath = None
         for part in qs.split("&"):
             if part.startswith("path="):
-                subpath = part.split("=", 1)[1]
+                subpath = urllib.parse.unquote(part.split("=", 1)[1])
                 break
 
         if subpath:
-            environ["PATH_INFO"] = f"/{subpath}"
+            clean_sub = subpath.lstrip("/")
+            if not clean_sub.startswith("api/"):
+                environ["PATH_INFO"] = f"/api/{clean_sub}"
+            else:
+                environ["PATH_INFO"] = f"/{clean_sub}"
         else:
             for header in ("HTTP_X_MATCHED_PATH", "HTTP_X_FORWARDED_URI", "HTTP_X_VERCEL_MATCHED_PATH"):
                 target = environ.get(header)
                 if target and target not in ("/api/index.py", "/api/index"):
-                    environ["PATH_INFO"] = target.split("?")[0]
+                    environ["PATH_INFO"] = urllib.parse.unquote(target.split("?")[0])
                     break
         return self.wsgi_app(environ, start_response)
 
@@ -106,6 +113,11 @@ def index():
 
 @app.route("/<path:path>", methods=["GET"])
 def static_proxy(path: str):
+    if path.startswith("api/") or path.startswith("scan/") or path in (
+        "analyze", "chat", "alert", "intel", "samples", "sample",
+        "languages", "quiz", "hygiene", "victim", "community", "health"
+    ):
+        return jsonify({"error": f"Endpoint /{path} not found or method not allowed"}), 404
     target = PUBLIC_DIR / path
     if target.exists() and target.is_file():
         return send_file(str(target))
@@ -140,6 +152,7 @@ def health_check():
 
 
 @app.route("/api/languages", methods=["GET"])
+@app.route("/languages", methods=["GET"])
 def get_languages():
     return jsonify({"success": True, "languages": SUPPORTED_LANGUAGES})
 
@@ -229,6 +242,7 @@ def analyze():
 
 # ── SCANNER 2: Text / SMS Message Analyzer ───────────────────────────────────
 @app.route("/api/scan/text", methods=["POST"])
+@app.route("/scan/text", methods=["POST"])
 def scan_text():
     data = request.get_json(silent=True) or {}
     text = data.get("text", "").strip()
@@ -248,6 +262,7 @@ def scan_text():
 
 # ── SCANNER 3: URL Phishing Detector ──────────────────────────────────────────
 @app.route("/api/scan/url", methods=["POST"])
+@app.route("/scan/url", methods=["POST"])
 def scan_url():
     data = request.get_json(silent=True) or {}
     url = data.get("url", "").strip()
@@ -264,6 +279,7 @@ def scan_url():
 
 # ── SCANNER 4: Phone Number Intelligence ──────────────────────────────────────
 @app.route("/api/scan/phone", methods=["POST"])
+@app.route("/scan/phone", methods=["POST"])
 def scan_phone():
     data = request.get_json(silent=True) or {}
     phone = data.get("phone", "").strip()
@@ -280,6 +296,7 @@ def scan_phone():
 
 # ── SCANNER 5: QR Code Decoder & Analyzer ─────────────────────────────────────
 @app.route("/api/scan/qr", methods=["POST"])
+@app.route("/scan/qr", methods=["POST"])
 def scan_qr():
     image_bytes = None
     if request.is_json:
@@ -307,6 +324,7 @@ def scan_qr():
 
 # ── SCAM AWARENESS QUIZ ───────────────────────────────────────────────────────
 @app.route("/api/quiz", methods=["GET"])
+@app.route("/quiz", methods=["GET"])
 def get_quiz():
     diff = request.args.get("difficulty", "all").lower()
     limit = request.args.get("limit", type=int) or 15
@@ -334,6 +352,7 @@ def get_quiz():
 
 # ── CROWDSOURCED COMMUNITY DATABASE ──────────────────────────────────────────
 @app.route("/api/community/report", methods=["POST"])
+@app.route("/community/report", methods=["POST"])
 def community_report():
     data = request.get_json(silent=True) or {}
     scam_type = data.get("scam_type", "phone")
@@ -356,6 +375,7 @@ def community_report():
 
 
 @app.route("/api/community/check", methods=["GET"])
+@app.route("/community/check", methods=["GET"])
 def community_check():
     scam_type = request.args.get("type", "phone").lower()
     value = request.args.get("value", "").strip()
@@ -368,6 +388,7 @@ def community_check():
 
 
 @app.route("/api/community/recent", methods=["GET"])
+@app.route("/community/recent", methods=["GET"])
 def community_recent():
     limit = request.args.get("limit", default=10, type=int)
     reports = get_recent_reports(limit=min(limit, 50))
@@ -376,6 +397,7 @@ def community_recent():
 
 # ── SECURITY HYGIENE ASSESSMENT ───────────────────────────────────────────────
 @app.route("/api/hygiene/checks", methods=["GET"])
+@app.route("/hygiene/checks", methods=["GET"])
 def hygiene_checks():
     return jsonify({
         "success": True,
@@ -385,6 +407,7 @@ def hygiene_checks():
 
 
 @app.route("/api/hygiene/score", methods=["POST"])
+@app.route("/hygiene/score", methods=["POST"])
 def hygiene_score():
     data = request.get_json(silent=True) or {}
     checked_ids = data.get("checked_ids", [])
@@ -394,11 +417,13 @@ def hygiene_score():
 
 # ── VICTIM RECOVERY ASSISTANT ─────────────────────────────────────────────────
 @app.route("/api/victim/banks", methods=["GET"])
+@app.route("/victim/banks", methods=["GET"])
 def victim_banks():
     return jsonify({"success": True, "banks": BANK_NUMBERS})
 
 
 @app.route("/api/victim/status", methods=["POST"])
+@app.route("/victim/status", methods=["POST"])
 def victim_status():
     data = request.get_json(silent=True) or {}
     minutes = data.get("minutes_elapsed", 30)

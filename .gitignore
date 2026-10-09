@@ -73,3 +73,5 @@ node_modules/
 ui_screenshot_*.png
 
 .vercel
+.env.local
+!.env.example
